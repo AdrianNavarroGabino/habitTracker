@@ -71,23 +71,21 @@ class Menu
 
     public int CambiarOpcion()
     {
-        if (Console.KeyAvailable)
+        ConsoleKeyInfo tecla = Console.ReadKey(true);
+        if (tecla.Key == ConsoleKey.DownArrow)
         {
-            ConsoleKeyInfo tecla = Console.ReadKey(true);
-            if (tecla.Key == ConsoleKey.DownArrow)
-            {
-                opcion = (opcion + 1) % 6;
-            }
-            if (tecla.Key == ConsoleKey.UpArrow)
-            {
-                if (opcion == 0)
-                    opcion = 5;
-                else
-                    opcion--;
-            }
-            if (tecla.Key == ConsoleKey.Spacebar)
-                return opcion;
+            opcion = (opcion + 1) % 6;
         }
+        if (tecla.Key == ConsoleKey.UpArrow)
+        {
+            if (opcion == 0)
+                opcion = 5;
+            else
+                opcion--;
+        }
+        if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
+            return opcion;
+
         return -1;
     }
 }
