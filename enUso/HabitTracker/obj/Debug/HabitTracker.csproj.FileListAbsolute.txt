@@ -1,0 +1,7 @@
+C:\Users\Adrián Navarro\source\repos\HabitTracker\HabitTracker\bin\Debug\HabitTracker.exe.config
+C:\Users\Adrián Navarro\source\repos\HabitTracker\HabitTracker\bin\Debug\HabitTracker.exe
+C:\Users\Adrián Navarro\source\repos\HabitTracker\HabitTracker\bin\Debug\HabitTracker.pdb
+C:\Users\Adrián Navarro\source\repos\HabitTracker\HabitTracker\obj\Debug\HabitTracker.csprojAssemblyReference.cache
+C:\Users\Adrián Navarro\source\repos\HabitTracker\HabitTracker\obj\Debug\HabitTracker.csproj.CoreCompileInputs.cache
+C:\Users\Adrián Navarro\source\repos\HabitTracker\HabitTracker\obj\Debug\HabitTracker.exe
+C:\Users\Adrián Navarro\source\repos\HabitTracker\HabitTracker\obj\Debug\HabitTracker.pdb
