@@ -10,6 +10,8 @@
  *      Colorear opción seleccionada
  *      Cambiar entre opciones con UP y DOWN
  *      Seleccionar opcion con SPACE
+ * 0.03, 13/05/2019:
+ *      Heredar de la interfaz IMostrarPantalla
  */
 
 using System;
@@ -19,7 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-class Menu
+class Menu : IMostrarPantalla
 {
     protected string[] menu;
     public static int opcion;

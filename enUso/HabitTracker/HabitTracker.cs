@@ -13,6 +13,8 @@
  *          Dibujar ranuras vacías y llenas de memoria
  *          Dibujar pantalla de introducir hábitos
  *          Añadir tecla Enter para seleccionar
+ * 0.03, 13/05/2019:
+ *          Actualizar el uso de la clase IntroducirHabitos
  */
 
 using System;
@@ -60,11 +62,18 @@ class HabitTracker
                     {
                         IntroducirHabitos introducirHabitos = new IntroducirHabitos(ranuraElegida);
                         bool seguirIntroduciendo = true;
+                        int confirmar = -1;
 
                         do
                         {
-                            introducirHabitos.IntroducirHabito();
-                            seguirIntroduciendo = introducirHabitos.SeguirIntroduciendo();
+                            introducirHabitos.Dibujar();
+                            do
+                            {
+                                introducirHabitos.SeguirIntroduciendo();
+                                confirmar = introducirHabitos.CambiarOpcion();
+                                if (confirmar == 1)
+                                    seguirIntroduciendo = false;
+                            } while (confirmar == -1);
                         } while (seguirIntroduciendo);
 
                         introducirHabitos.GuardarHabitos();

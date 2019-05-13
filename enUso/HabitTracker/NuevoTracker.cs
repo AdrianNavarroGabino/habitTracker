@@ -10,13 +10,16 @@
 *           Si existe, poner esa ranura como llena y no dejar elegir
 *           Cambiar entre ranuras con las flechas y seleccionar con SPACE o ENTER
 *           Volver al menú principal con ESC
+* 0.03, 13/05/2019:
+*           Heredar de la interfaz IMostrarPantalla
+*           Cambiar nombre método DibujarRanura por DibujarOpcion
 */
 
 using System;
 using System.IO;
 using System.Threading;
 
-class NuevoTracker
+class NuevoTracker : IMostrarPantalla
 {
     public static int VOLVER = 999;
 
@@ -40,7 +43,7 @@ class NuevoTracker
         opcion = 0;
     }
 
-    public void DibujarRanura(int yInicial, int yFinal, int opcionActual)
+    public void DibujarOpcion(int yInicial, int yFinal, int opcionActual)
     {
         if (opcion == opcionActual)
         {
@@ -68,9 +71,9 @@ class NuevoTracker
         for (int i = 0; i < 3; i++)
         {
             if (ranuraVacia[i])
-                DibujarRanura(i * 8, i * 8 + 4, i);
+                DibujarOpcion(i * 8, i * 8 + 4, i);
             else
-                DibujarRanura(i * 8 + 4, i * 8 + 8, i);
+                DibujarOpcion(i * 8 + 4, i * 8 + 8, i);
         }
 
         Console.BackgroundColor = ConsoleColor.Black;

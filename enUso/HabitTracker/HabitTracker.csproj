@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CargarTracker.cs" />
+    <Compile Include="IMostrarPantalla.cs" />
     <Compile Include="IntroducirHabitos.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="ModificarDatos.cs" />
