@@ -52,6 +52,7 @@
     <Compile Include="HabitTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Salir.cs" />
+    <Compile Include="Tracker.cs" />
     <Compile Include="TuAnyoEnPixeles.cs" />
     <Compile Include="VerResumen.cs" />
   </ItemGroup>

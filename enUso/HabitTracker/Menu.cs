@@ -12,6 +12,8 @@
  *      Seleccionar opcion con SPACE
  * 0.03, 13/05/2019:
  *      Heredar de la interfaz IMostrarPantalla
+ * 0.04, 15/05/2019:
+ *      Actualizar clase principal con la clase Tracker
  */
 
 using System;

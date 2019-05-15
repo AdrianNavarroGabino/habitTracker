@@ -29,6 +29,7 @@ class HabitTracker
         Console.SetWindowSize(100, 40);
         
         CargarTracker cargarTracker = new CargarTracker();
+        Tracker tracker;
         TuAnyoEnPixeles tuAnyoEnPixeles = new TuAnyoEnPixeles();
         VerResumen verResumen = new VerResumen();
         ModificarDatos modificarDatos = new ModificarDatos();
@@ -77,6 +78,16 @@ class HabitTracker
                         } while (seguirIntroduciendo);
 
                         introducirHabitos.GuardarHabitos();
+
+                        int volver = -1;
+                        
+                        tracker = new Tracker(ranuraElegida);
+
+                        while (volver != 4)
+                        {
+                            tracker.Dibujar();
+                            volver = tracker.CambiarOpcion();
+                        }
                     }
                     break;
                 case 1: break;

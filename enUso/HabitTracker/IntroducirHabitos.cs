@@ -14,6 +14,10 @@
  *          Mejorar clases de dibujar pantalla
  *          Cambiar la confirmación por botones
  *          Escribir habitos con ASCII Art
+ * 0.04, 15/05/2019:
+ *          Comprobar si se puede seguir introduciendo hábitos por si no van a
+ *          caber en pantalla (máximo 30 hábitos)
+ *          Arreglar la escritura, no se mostraban bien las letras al introducir hábitos
  */
 
 using System;
@@ -75,7 +79,6 @@ class IntroducirHabitos : IMostrarPantalla
         {
             fichero.WriteLine(habitos[i]);
         }
-        fichero.WriteLine(new string('/', 10));
         fichero.Close();
     }
 
@@ -118,7 +121,11 @@ class IntroducirHabitos : IMostrarPantalla
             opcion = (opcion + 1) % 2;
         }
         if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
-            return opcion;
+        {
+            if (opcion == 0 && habitos.Count < 30)
+                return 0;
+            return 1;
+        }
 
         return -1;
     }
