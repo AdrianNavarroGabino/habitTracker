@@ -1,5 +1,5 @@
 ﻿/**
- * VerResumen.cs - Habit Tracker, Opción "ver resumen"
+ * Carga.cs - Habit Tracker, Opción "cargar tracker"
  * 
  * @author Adrián Navarro Gabino
  * 
@@ -7,6 +7,6 @@
  * 
  */
 
-class VerResumen
+class Carga
 {
 }

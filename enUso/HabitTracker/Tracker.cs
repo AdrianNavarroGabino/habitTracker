@@ -12,13 +12,16 @@
  *          Limitar el tamaño del hábito para que quepa en pantalla
  *          Mostrar opciones en la parte de abajo de la pantalla
  *          Opcion "VOLVER" funcional
+ * 0.05 16/05/2019:
+ *          Cambiar color de verde a azul para mejorar la visibilidad
+ *          Método BorrarTracker
  */
-
+ 
 using System;
 using System.IO;
 using System.Threading;
 
-class Tracker : IMostrarPantalla
+class Tracker : IPantallaMostrable
 {
     static string[] mes = {"enero", "febrero", "marzo",
                 "abril", "mayo", "junio",
@@ -95,7 +98,7 @@ class Tracker : IMostrarPantalla
     {
         if (opcion == opcionActual)
         {
-            Console.BackgroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.Blue;
         }
         else
         {
@@ -283,5 +286,26 @@ class Tracker : IMostrarPantalla
             }
             Console.WriteLine();
         }
+    }
+
+    public void BorrarTracker()
+    {
+        Console.Clear();
+        
+        Console.SetCursorPosition(15, 10);
+        Console.WriteLine(@"   _  ___ ___ _____ _   ___   ___ ___ ___ _   _ ___  ___ ___ ");
+        Console.SetCursorPosition(15, 11);
+        Console.WriteLine(@"  (_)| __/ __|_   _/_\ / __| / __| __/ __| | | | _ \/ _ \__ \");        Console.SetCursorPosition(15, 12);        Console.WriteLine(@" / /_| _|\__ \ | |/ _ \\__ \ \__ \ _| (_ | |_| |   / (_) |/_/");
+        Console.SetCursorPosition(15, 13);
+        Console.WriteLine(@" \___|___|___/ |_/_/ \_\___/ |___/___\___|\___/|_|_\\___/(_) ");
+
+        Console.BackgroundColor = ConsoleColor.Black;
+
+        Utiles.DibujarOpcion(0, 4, 0);
+        Utiles.DibujarOpcion(4, 8, 1);
+
+        Console.BackgroundColor = ConsoleColor.Black;
+
+        Thread.Sleep(300);
     }
 }

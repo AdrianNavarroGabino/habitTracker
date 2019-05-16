@@ -1,5 +1,5 @@
 ﻿/**
- * IMostrarPantalla.cs - Habit Tracker, Interfaz para dibujar y cambiar
+ * IPantallaMostrable.cs - Habit Tracker, Interfaz para dibujar y cambiar
  *                       opciones en pantalla
  * 
  * @author Adrián Navarro Gabino
@@ -9,7 +9,7 @@
  *      Métodos DibujarOpcion, Dibujar y CambiarOpcion
  */
 
-interface IMostrarPantalla
+interface IPantallaMostrable
 {
     void DibujarOpcion(int yInicial, int yFinal, int opcionActual);
     void Dibujar();

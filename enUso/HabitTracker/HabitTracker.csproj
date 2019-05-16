@@ -43,18 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CargarTracker.cs" />
-    <Compile Include="IMostrarPantalla.cs" />
-    <Compile Include="IntroducirHabitos.cs" />
+    <Compile Include="Aplicacion.cs" />
+    <Compile Include="Carga.cs" />
+    <Compile Include="Habito.cs" />
+    <Compile Include="IPantallaMostrable.cs" />
+    <Compile Include="IntroduccionHabitos.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="ModificarDatos.cs" />
+    <Compile Include="ModificacionDeDatos.cs" />
     <Compile Include="NuevoTracker.cs" />
     <Compile Include="HabitTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Salir.cs" />
     <Compile Include="Tracker.cs" />
     <Compile Include="TuAnyoEnPixeles.cs" />
-    <Compile Include="VerResumen.cs" />
+    <Compile Include="Resumen.cs" />
+    <Compile Include="Utiles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

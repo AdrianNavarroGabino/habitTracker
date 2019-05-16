@@ -14,31 +14,61 @@
  *      Heredar de la interfaz IMostrarPantalla
  * 0.04, 15/05/2019:
  *      Actualizar clase principal con la clase Tracker
+ * 0.05 16/05/2019:
+ *          Cambiar color de verde a azul para mejorar la visibilidad
+ *          Cambiar ReadAllLines por StreamReader en la lectura de las
+ *          opciones del menú
+ *          Bloque try-catch en la lectura de fichero
  */
 
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
-class Menu : IMostrarPantalla
+class Menu : IPantallaMostrable
 {
-    protected string[] menu;
+    protected List<string> menu;
     public static int opcion;
 
     public Menu()
     {
-        menu = File.ReadAllLines(@"data\menu.txt");
-        opcion = 0;
+        menu = new List<string>();
+        try
+        {
+            StreamReader fichero = new StreamReader(@"data\menu.txt");
+
+            string linea;
+
+            do
+            {
+                linea = fichero.ReadLine();
+
+                if (linea != null)
+                {
+                    menu.Add(linea);
+                }
+            } while (linea != null);
+
+            opcion = 0;
+        }
+        catch(IOException)
+        {
+            Console.WriteLine("Ha habido un error");
+            Environment.Exit(1);
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine("Error inesperado: " + exc.Message);
+            Environment.Exit(1);
+        }
     }
 
     public void DibujarOpcion(int yInicial, int yFinal, int opcionActual)
     {
         if (opcion == opcionActual)
         {
-            Console.BackgroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.Blue;
         }
         else
         {

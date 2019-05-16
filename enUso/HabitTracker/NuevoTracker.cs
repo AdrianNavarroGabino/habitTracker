@@ -13,13 +13,15 @@
 * 0.03, 13/05/2019:
 *           Heredar de la interfaz IMostrarPantalla
 *           Cambiar nombre método DibujarRanura por DibujarOpcion
+* 0.05 16/05/2019:
+ *          Cambiar color de verde a azul para mejorar la visibilidad
 */
 
 using System;
 using System.IO;
 using System.Threading;
 
-class NuevoTracker : IMostrarPantalla
+class NuevoTracker : IPantallaMostrable
 {
     public static int VOLVER = 999;
 
@@ -47,7 +49,7 @@ class NuevoTracker : IMostrarPantalla
     {
         if (opcion == opcionActual)
         {
-            Console.BackgroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.Blue;
         }
         else
         {

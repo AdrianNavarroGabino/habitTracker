@@ -6,6 +6,6 @@
  * Cambios:
  * 
  */
-class ModificarDatos
+class ModificacionDeDatos
 {
 }

@@ -1,5 +1,5 @@
 ﻿/**
- * IntroducirHabitos.cs - Habit Tracker, Introducción de hábitos dentro de Nuevo Tracker
+ * IntroduccionHabitos.cs - Habit Tracker, Introducción de hábitos dentro de Nuevo Tracker
  * 
  * @author Adrián Navarro Gabino
  * 
@@ -17,25 +17,30 @@
  * 0.04, 15/05/2019:
  *          Comprobar si se puede seguir introduciendo hábitos por si no van a
  *          caber en pantalla (máximo 30 hábitos)
- *          Arreglar la escritura, no se mostraban bien las letras al introducir hábitos
+ *          Arreglar la escritura, no se mostraban bien las letras al
+ *          introducir hábitos
+ * 0.05 16/05/2019:
+ *          Cambiar color de verde a azul para mejorar la visibilidad
+ *          Al añadir hábitos a la lista, se cambia el string con el nombre del
+ *          hábito por el ToString del objeto Habito
+ *          Bloque try-catch en la escritura de fichero
  */
 
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading;
 
-class IntroducirHabitos : IMostrarPantalla
+class IntroduccionHabitos : IPantallaMostrable
 {
     protected string[] textoIntroducirHabitos;
-    protected List<string> habitos;
+    protected List<Habito> habitos;
     protected int opcion;
     protected string[] confirmacion;
     protected int ranura;
     protected string[] letras;
 
-    public IntroducirHabitos(int ranura)
+    public IntroduccionHabitos(int ranura)
     {
         this.ranura = ranura;
         opcion = 0;
@@ -49,7 +54,7 @@ class IntroducirHabitos : IMostrarPantalla
         letras = File.ReadAllLines(
             @"data\letras.txt");
 
-        habitos = new List<string>();
+        habitos = new List<Habito>();
     }
 
     public void SeguirIntroduciendo()
@@ -74,29 +79,30 @@ class IntroducirHabitos : IMostrarPantalla
 
     public void GuardarHabitos()
     {
-        StreamWriter fichero = File.CreateText(@"data\ranura" + ranura + ".txt");
-        for(int i = 0; i < habitos.Count; i++)
+        try
         {
-            fichero.WriteLine(habitos[i]);
+            StreamWriter fichero = File.CreateText(@"data\ranura" + ranura + ".txt");
+            for (int i = 0; i < habitos.Count; i++)
+            {
+                fichero.WriteLine(habitos[i]);
+            }
+            fichero.Close();
         }
-        fichero.Close();
+        catch (IOException)
+        {
+            Console.WriteLine("Ha habido un error");
+            Environment.Exit(1);
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine("Error inesperado: " + exc.Message);
+            Environment.Exit(1);
+        }
     }
 
     public void DibujarOpcion(int yInicial, int yFinal, int opcionActual)
     {
-        if (opcion == opcionActual)
-        {
-            Console.BackgroundColor = ConsoleColor.Green;
-        }
-        else
-        {
-            Console.BackgroundColor = ConsoleColor.Black;
-        }
-        for (int i = yInicial; i < yFinal; i++)
-        {
-            Console.SetCursorPosition(20 + yInicial * 10, i - yInicial + 25);
-            Console.WriteLine(confirmacion[i]);
-        }
+        Utiles.DibujarOpcion(yInicial, yFinal, opcionActual);
     }
 
     public void Dibujar()
@@ -114,20 +120,7 @@ class IntroducirHabitos : IMostrarPantalla
 
     public int CambiarOpcion()
     {
-        ConsoleKeyInfo tecla = Console.ReadKey(true);
-        if (tecla.Key == ConsoleKey.RightArrow ||
-            tecla.Key == ConsoleKey.LeftArrow)
-        {
-            opcion = (opcion + 1) % 2;
-        }
-        if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
-        {
-            if (opcion == 0 && habitos.Count < 30)
-                return 0;
-            return 1;
-        }
-
-        return -1;
+        return Utiles.CambiarOpcion();
     }
 
     public void EscribirHabito()
@@ -269,6 +262,6 @@ class IntroducirHabitos : IMostrarPantalla
             }
         } while (tecla.Key != ConsoleKey.Enter);
 
-        habitos.Add(habito);
+        habitos.Add(new Habito(habito, ranura));
     }
 }
