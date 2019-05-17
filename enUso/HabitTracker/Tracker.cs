@@ -39,7 +39,10 @@ class Tracker : IPantallaMostrable
     int anyoActual;
     int numeroDeDias;
 
-    char[][] casillas;
+    static char[][] casillas;
+
+    protected string[] ranuras;
+    public static bool[] ranuraVacia;
 
     public Tracker(int ranuraElegida)
     {
@@ -67,7 +70,24 @@ class Tracker : IPantallaMostrable
         }
     }
 
-    public void Dibujar()
+    public Tracker()
+    {
+        ranuras = File.ReadAllLines(@"data\ranuras.txt");
+        ranuraVacia = new bool[3];
+
+        for (int i = 0; i < 3; i++)
+        {
+            ranuraVacia[i] = File.Exists(@"data\ranura" + i + ".txt") ?
+                false : true;
+        }
+
+        opcion = 0;
+    }
+
+    public int GetOpcion() { return opcion; }
+    public void SetOpcion(int opcion) { this.opcion = opcion; }
+
+    public virtual void Dibujar()
     {
         Console.Clear();
 
@@ -94,7 +114,7 @@ class Tracker : IPantallaMostrable
         Thread.Sleep(300);
     }
 
-    public void DibujarOpcion(int xInicial, int yInicial, int opcionActual)
+    public virtual void DibujarOpcion(int xInicial, int yInicial, int opcionActual)
     {
         if (opcion == opcionActual)
         {
@@ -112,7 +132,7 @@ class Tracker : IPantallaMostrable
         Console.BackgroundColor = ConsoleColor.Black;
     }
 
-    public int CambiarOpcion()
+    public virtual int CambiarOpcion()
     {
         ConsoleKeyInfo tecla = Console.ReadKey(true);
         if (tecla.Key == ConsoleKey.RightArrow)
@@ -295,7 +315,9 @@ class Tracker : IPantallaMostrable
         Console.SetCursorPosition(15, 10);
         Console.WriteLine(@"   _  ___ ___ _____ _   ___   ___ ___ ___ _   _ ___  ___ ___ ");
         Console.SetCursorPosition(15, 11);
-        Console.WriteLine(@"  (_)| __/ __|_   _/_\ / __| / __| __/ __| | | | _ \/ _ \__ \");        Console.SetCursorPosition(15, 12);        Console.WriteLine(@" / /_| _|\__ \ | |/ _ \\__ \ \__ \ _| (_ | |_| |   / (_) |/_/");
+        Console.WriteLine(@"  (_)| __/ __|_   _/_\ / __| / __| __/ __| | | | _ \/ _ \__ \");
+        Console.SetCursorPosition(15, 12);
+        Console.WriteLine(@" / /_| _|\__ \ | |/ _ \\__ \ \__ \ _| (_ | |_| |   / (_) |/_/");
         Console.SetCursorPosition(15, 13);
         Console.WriteLine(@" \___|___|___/ |_/_/ \_\___/ |___/___\___|\___/|_|_\\___/(_) ");
 
@@ -307,5 +329,14 @@ class Tracker : IPantallaMostrable
         Console.BackgroundColor = ConsoleColor.Black;
 
         Thread.Sleep(300);
+    }
+
+    public void ActualizarTracker()
+    {
+        //Elegir hábito
+        //Elegir año
+        //Elegir mes
+        //Elegir día
+        //Selecionar si se ha realizado o no
     }
 }

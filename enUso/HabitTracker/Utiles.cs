@@ -13,6 +13,7 @@ using System.IO;
 
 class Utiles
 {
+    public const int VOLVER = 999;
     static int opcion = 0;
     static string[] confirmacion = File.ReadAllLines(@"data\confirmacion.txt");
 

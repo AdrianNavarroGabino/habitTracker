@@ -24,6 +24,8 @@
  *          Al añadir hábitos a la lista, se cambia el string con el nombre del
  *          hábito por el ToString del objeto Habito
  *          Bloque try-catch en la escritura de fichero
+ * 0.06 17/05/2019:
+ *          Optimización del método EscribirHabito
  */
 
 using System;
@@ -128,136 +130,26 @@ class IntroduccionHabitos : IPantallaMostrable
         int posicionX = 4;
         int posicionY = 15;
         string habito = "";
-        int indiceDeLetra = -1;
 
         ConsoleKeyInfo tecla;
         do
         {
             tecla = Console.ReadKey(true);
-            switch (tecla.Key)
-            {
-                case ConsoleKey.A:
-                    indiceDeLetra = 0;
-                    habito += "A";
-                    break;
-                case ConsoleKey.B:
-                    indiceDeLetra = 4;
-                    habito += "B";
-                    break;
-                case ConsoleKey.C:
-                    indiceDeLetra = 8;
-                    habito += "C";
-                    break;
-                case ConsoleKey.D:
-                    indiceDeLetra = 12;
-                    habito += "D";
-                    break;
-                case ConsoleKey.E:
-                    indiceDeLetra = 16;
-                    habito += "E";
-                    break;
-                case ConsoleKey.F:
-                    indiceDeLetra = 20;
-                    habito += "F";
-                    break;
-                case ConsoleKey.G:
-                    indiceDeLetra = 24;
-                    habito += "G";
-                    break;
-                case ConsoleKey.H:
-                    indiceDeLetra = 28;
-                    habito += "H";
-                    break;
-                case ConsoleKey.I:
-                    indiceDeLetra = 32;
-                    habito += "I";
-                    break;
-                case ConsoleKey.J:
-                    indiceDeLetra = 36;
-                    habito += "J";
-                    break;
-                case ConsoleKey.K:
-                    indiceDeLetra = 40;
-                    habito += "K";
-                    break;
-                case ConsoleKey.L:
-                    indiceDeLetra = 44;
-                    habito += "L";
-                    break;
-                case ConsoleKey.M:
-                    indiceDeLetra = 48;
-                    habito += "M";
-                    break;
-                case ConsoleKey.N:
-                    indiceDeLetra = 52;
-                    habito += "N";
-                    break;
-                case ConsoleKey.O:
-                    indiceDeLetra = 56;
-                    habito += "O";
-                    break;
-                case ConsoleKey.P:
-                    indiceDeLetra = 60;
-                    habito += "P";
-                    break;
-                case ConsoleKey.Q:
-                    indiceDeLetra = 64;
-                    habito += "Q";
-                    break;
-                case ConsoleKey.R:
-                    indiceDeLetra = 68;
-                    habito += "R";
-                    break;
-                case ConsoleKey.S:
-                    indiceDeLetra = 72;
-                    habito += "S";
-                    break;
-                case ConsoleKey.T:
-                    indiceDeLetra = 76;
-                    habito += "T";
-                    break;
-                case ConsoleKey.U:
-                    indiceDeLetra = 80;
-                    habito += "U";
-                    break;
-                case ConsoleKey.V:
-                    indiceDeLetra = 84;
-                    habito += "V";
-                    break;
-                case ConsoleKey.W:
-                    indiceDeLetra = 88;
-                    habito += "W";
-                    break;
-                case ConsoleKey.X:
-                    indiceDeLetra = 92;
-                    habito += "X";
-                    break;
-                case ConsoleKey.Y:
-                    indiceDeLetra = 96;
-                    habito += "Y";
-                    break;
-                case ConsoleKey.Z:
-                    indiceDeLetra = 100;
-                    habito += "Z";
-                    break;
-                case ConsoleKey.Enter:
-                    break;
-                case ConsoleKey.Spacebar:
-                    posicionX = 4;
-                    posicionY += 6;
-                    break;
-                default:
-                    indiceDeLetra = 104;
-                    habito += "?";
-                    break;
-            }
+            
             if (posicionX < 94 && tecla.Key != ConsoleKey.Spacebar && posicionY <= 33)
             {
-                for (int i = indiceDeLetra; i < indiceDeLetra + 4; i++)
-                {
-                    Console.SetCursorPosition(posicionX, i - indiceDeLetra + posicionY);
-                    Console.WriteLine(letras[i]);
-                }
+                char caracter = tecla.KeyChar;
+                habito += caracter;
+
+                Console.SetCursorPosition(posicionX, posicionY);
+                Console.WriteLine(@" ____ ");
+                Console.SetCursorPosition(posicionX, 1 + posicionY);
+                Console.WriteLine(@"||" + caracter + " ||");
+                Console.SetCursorPosition(posicionX, 2 + posicionY);
+                Console.WriteLine(@"||__||");
+                Console.SetCursorPosition(posicionX, 3 + posicionY);
+                Console.WriteLine(@"|/__\|");
+
                 posicionX += 6;
             }
         } while (tecla.Key != ConsoleKey.Enter);

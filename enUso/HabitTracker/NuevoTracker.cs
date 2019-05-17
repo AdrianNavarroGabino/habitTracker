@@ -13,41 +13,27 @@
 * 0.03, 13/05/2019:
 *           Heredar de la interfaz IMostrarPantalla
 *           Cambiar nombre método DibujarRanura por DibujarOpcion
-* 0.05 16/05/2019:
- *          Cambiar color de verde a azul para mejorar la visibilidad
+* 0.05, 16/05/2019:
+*           Cambiar color de verde a azul para mejorar la visibilidad
+* 0.06, 17/05/2019:
+*           Clase hereda de Tracker
+*           Metodos override
+*           Cambio del constructor a la clase padre
 */
 
 using System;
 using System.IO;
 using System.Threading;
 
-class NuevoTracker : IPantallaMostrable
+class NuevoTracker : Tracker, IPantallaMostrable
 {
-    public static int VOLVER = 999;
-
-    protected string[] ranuras;
-    protected bool[] ranuraVacia;
-    protected int opcion;
-
-    public NuevoTracker()
+    public NuevoTracker(): base()
     {
-        ranuras = File.ReadAllLines(@"data\ranuras.txt");
-        ranuraVacia = new bool[3];
-
-        for (int i = 0; i < 3; i++)
-        {
-            if (File.Exists(@"data\ranura" + i + ".txt"))
-                ranuraVacia[i] = false;
-            else
-                ranuraVacia[i] = true;
-        }
-
-        opcion = 0;
     }
 
-    public void DibujarOpcion(int yInicial, int yFinal, int opcionActual)
+    public override void DibujarOpcion(int yInicial, int yFinal, int opcionActual)
     {
-        if (opcion == opcionActual)
+        if (GetOpcion() == opcionActual)
         {
             Console.BackgroundColor = ConsoleColor.Blue;
         }
@@ -66,7 +52,7 @@ class NuevoTracker : IPantallaMostrable
         }
     }
 
-    public void Dibujar()
+    public override void Dibujar()
     {
         Console.Clear();
 
@@ -83,24 +69,24 @@ class NuevoTracker : IPantallaMostrable
         Thread.Sleep(300);
     }
 
-    public int CambiarOpcion()
+    public override int CambiarOpcion()
     {
         ConsoleKeyInfo tecla = Console.ReadKey(true);
         if (tecla.Key == ConsoleKey.DownArrow)
         {
-            opcion = (opcion + 1) % 3;
+            SetOpcion((GetOpcion() + 1) % 3);
         }
         if (tecla.Key == ConsoleKey.UpArrow)
         {
-            if (opcion == 0)
-                opcion = 2;
+            if (GetOpcion() == 0)
+                SetOpcion(2);
             else
-                opcion--;
+                SetOpcion(GetOpcion() - 1);
         }
-        if ((tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter) && ranuraVacia[opcion])
-            return opcion;
+        if ((tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter) && ranuraVacia[GetOpcion()])
+            return GetOpcion();
         if (tecla.Key == ConsoleKey.Escape)
-            return VOLVER;
+            return Utiles.VOLVER;
 
         return -1;
     }

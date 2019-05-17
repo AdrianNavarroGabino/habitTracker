@@ -18,6 +18,9 @@
  * 0.05, 16/05/2019:
  *          Borrar trackers después de crearlos
  *          Refactorizar el código
+ * 0.06, 17/05/2019:
+ *          La opción "cargar tracker" empieza a estar operativa
+ *          Clases EjecutarCargarTracker y EjecutarTrackerCargado
  */
 
 using System;
@@ -28,6 +31,7 @@ class HabitTracker
     Carga cargarTracker;
     Tracker tracker;
     NuevoTracker nuevoTracker;
+    TrackerCargado trackerCargado;
     IntroduccionHabitos introducirHabitos;
     TuAnyoEnPixeles tuAnyoEnPixeles;
     Resumen verResumen;
@@ -38,8 +42,7 @@ class HabitTracker
     public HabitTracker()
     {
         Console.SetWindowSize(100, 40);
-
-        cargarTracker = new Carga();
+        
         tuAnyoEnPixeles = new TuAnyoEnPixeles();
         verResumen = new Resumen();
         modificarDatos = new ModificacionDeDatos();
@@ -72,7 +75,9 @@ class HabitTracker
             case 0:
                 EjecutarNuevoTracker();
                 break;
-            case 1: break;
+            case 1:
+                EjecutarCargarTracker();
+                break;
             case 2: break;
             case 3: break;
             case 4: break;
@@ -91,7 +96,7 @@ class HabitTracker
             ranuraElegida = nuevoTracker.CambiarOpcion();
         } while (ranuraElegida == -1);
 
-        if (ranuraElegida != NuevoTracker.VOLVER)
+        if (ranuraElegida != Utiles.VOLVER)
         {
             introducirHabitos = new IntroduccionHabitos(ranuraElegida);
             IntroducirHabitos();
@@ -141,6 +146,58 @@ class HabitTracker
                     while (borrar == -1)
                     {
                         tracker.BorrarTracker();
+                        borrar = Utiles.CambiarOpcion();
+
+                        if (borrar == 0)
+                        {
+                            File.Delete(@"data\ranura" + ranuraElegida + ".txt");
+                            opcionTracker = 4;
+                        }
+                    }
+
+                    break;
+            }
+        }
+    }
+
+    public void EjecutarCargarTracker()
+    {
+        cargarTracker = new Carga();
+
+        int ranuraElegida = -1;
+
+        do
+        {
+            cargarTracker.Dibujar();
+            ranuraElegida = cargarTracker.CambiarOpcion();
+        } while (ranuraElegida == -1);
+        if (ranuraElegida != Utiles.VOLVER)
+        {
+            trackerCargado = new TrackerCargado(ranuraElegida);
+            EjecutarTrackerCargado(ranuraElegida);
+        }
+    }
+
+    public void EjecutarTrackerCargado(int ranuraElegida)
+    {
+        int opcionTracker = -1;
+
+        while (opcionTracker != 4)
+        {
+            trackerCargado.Dibujar();
+            opcionTracker = trackerCargado.CambiarOpcion();
+
+            switch (opcionTracker)
+            {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    int borrar = -1;
+
+                    while (borrar == -1)
+                    {
+                        trackerCargado.BorrarTracker();
                         borrar = Utiles.CambiarOpcion();
 
                         if (borrar == 0)
