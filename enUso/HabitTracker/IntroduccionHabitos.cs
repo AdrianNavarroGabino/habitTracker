@@ -19,13 +19,19 @@
  *          caber en pantalla (máximo 30 hábitos)
  *          Arreglar la escritura, no se mostraban bien las letras al
  *          introducir hábitos
- * 0.05 16/05/2019:
+ * 0.05, 16/05/2019:
  *          Cambiar color de verde a azul para mejorar la visibilidad
  *          Al añadir hábitos a la lista, se cambia el string con el nombre del
  *          hábito por el ToString del objeto Habito
  *          Bloque try-catch en la escritura de fichero
- * 0.06 17/05/2019:
+ * 0.06, 17/05/2019:
  *          Optimización del método EscribirHabito
+ * 0.07, 20/05/2019:
+ *          Eliminar la variable letras para que no dé fallo.
+ *          En el método EscribirHabito, añadir como condicion que la tecla
+ *          pulsada no sea Enter para que no lo registre
+ *          En el método GuardarHabitos, pasar por referencia el parámetro
+ *          numeroDeHabitos para poder utilizarlo en otras clases
  */
 
 using System;
@@ -40,7 +46,6 @@ class IntroduccionHabitos : IPantallaMostrable
     protected int opcion;
     protected string[] confirmacion;
     protected int ranura;
-    protected string[] letras;
 
     public IntroduccionHabitos(int ranura)
     {
@@ -52,9 +57,6 @@ class IntroduccionHabitos : IPantallaMostrable
 
         confirmacion = File.ReadAllLines(
             @"data\confirmacion.txt");
-
-        letras = File.ReadAllLines(
-            @"data\letras.txt");
 
         habitos = new List<Habito>();
     }
@@ -79,7 +81,7 @@ class IntroduccionHabitos : IPantallaMostrable
         Thread.Sleep(300);
     }
 
-    public void GuardarHabitos()
+    public void GuardarHabitos(ref int numeroDeHabitos)
     {
         try
         {
@@ -87,6 +89,7 @@ class IntroduccionHabitos : IPantallaMostrable
             for (int i = 0; i < habitos.Count; i++)
             {
                 fichero.WriteLine(habitos[i]);
+                numeroDeHabitos++;
             }
             fichero.Close();
         }
@@ -136,7 +139,8 @@ class IntroduccionHabitos : IPantallaMostrable
         {
             tecla = Console.ReadKey(true);
             
-            if (posicionX < 94 && tecla.Key != ConsoleKey.Spacebar && posicionY <= 33)
+            if (tecla.Key != ConsoleKey.Enter && posicionX < 94 &&
+                tecla.Key != ConsoleKey.Spacebar && posicionY <= 33)
             {
                 char caracter = tecla.KeyChar;
                 habito += caracter;

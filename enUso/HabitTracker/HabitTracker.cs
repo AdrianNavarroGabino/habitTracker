@@ -21,6 +21,12 @@
  * 0.06, 17/05/2019:
  *          La opción "cargar tracker" empieza a estar operativa
  *          Clases EjecutarCargarTracker y EjecutarTrackerCargado
+ * 0.07, 20/05/2019:
+ *          Añadir la variable estática numeroDeHabitos
+ *          En el método IntroducirHabitos, inicializar en 0 la variable
+ *          numeroDeHabitos y pasarla por referencia en la llamada del
+ *          método GuardarHabitos
+ *          Añadir los métodos necesarios de la clase ListaDeComprobaciones
  */
 
 using System;
@@ -38,6 +44,10 @@ class HabitTracker
     ModificacionDeDatos modificarDatos;
     Salir salir;
     Menu menu;
+    ListaDeComprobaciones listaDeComprobaciones;
+
+    static int numeroDeHabitos;
+    static int ultimaClave;
 
     public HabitTracker()
     {
@@ -102,6 +112,7 @@ class HabitTracker
             IntroducirHabitos();
             
             tracker = new Tracker(ranuraElegida);
+            listaDeComprobaciones = new ListaDeComprobaciones(numeroDeHabitos, ranuraElegida);
             EjecutarTracker(ranuraElegida);
         }
     }
@@ -110,6 +121,7 @@ class HabitTracker
     {
         bool seguirIntroduciendo = true;
         int confirmar = -1;
+        numeroDeHabitos = 0;
 
         do
         {
@@ -123,7 +135,7 @@ class HabitTracker
             } while (confirmar == -1);
         } while (seguirIntroduciendo);
 
-        introducirHabitos.GuardarHabitos();
+        introducirHabitos.GuardarHabitos(ref numeroDeHabitos);
     }
 
     public void EjecutarTracker(int ranuraElegida)
@@ -174,6 +186,7 @@ class HabitTracker
         if (ranuraElegida != Utiles.VOLVER)
         {
             trackerCargado = new TrackerCargado(ranuraElegida);
+            listaDeComprobaciones.ActualizarLista(ref ultimaClave);
             EjecutarTrackerCargado(ranuraElegida);
         }
     }

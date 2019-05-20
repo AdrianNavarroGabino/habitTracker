@@ -12,9 +12,11 @@
  *          Limitar el tamaño del hábito para que quepa en pantalla
  *          Mostrar opciones en la parte de abajo de la pantalla
  *          Opcion "VOLVER" funcional
- * 0.05 16/05/2019:
+ * 0.05, 16/05/2019:
  *          Cambiar color de verde a azul para mejorar la visibilidad
  *          Método BorrarTracker
+ * 0.07, 20/05/2019:
+ *          Eliminar algunas variables que ahora están en la clase ListaDeComprobaciones
  */
  
 using System;
@@ -39,8 +41,6 @@ class Tracker : IPantallaMostrable
     int anyoActual;
     int numeroDeDias;
 
-    static char[][] casillas;
-
     protected string[] ranuras;
     public static bool[] ranuraVacia;
 
@@ -53,21 +53,8 @@ class Tracker : IPantallaMostrable
         opcion = 0;
 
         ahora = DateTime.Now;
-        mesActual = mes[ahora.Month - 1];
         anyoActual = ahora.Year;
         numeroDeDias = DateTime.DaysInMonth(anyoActual, ahora.Month);
-
-        casillas = new char[numeroDeHabitos][];
-
-        for(int i = 0; i < numeroDeHabitos; i++)
-        {
-            casillas[i] = new char[numeroDeDias];
-
-            for(int j = 0; j < numeroDeDias; j++)
-            {
-                casillas[i][j] = ' ';
-            }
-        }
     }
 
     public Tracker()
@@ -269,6 +256,7 @@ class Tracker : IPantallaMostrable
 
     public void DibujarTabla()
     {
+        /* Para corregir
         int numeroDeLetrasDelHabito;
         for (int i = 0; i < numeroDeHabitos; i++)
         {
@@ -305,7 +293,7 @@ class Tracker : IPantallaMostrable
                 Console.Write("|");
             }
             Console.WriteLine();
-        }
+        }*/
     }
 
     public void BorrarTracker()

@@ -48,6 +48,7 @@
     <Compile Include="Habito.cs" />
     <Compile Include="IPantallaMostrable.cs" />
     <Compile Include="IntroduccionHabitos.cs" />
+    <Compile Include="ListaDeComprobaciones.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="ModificacionDeDatos.cs" />
     <Compile Include="NuevoTracker.cs" />
