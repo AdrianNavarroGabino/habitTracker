@@ -17,9 +17,13 @@
  *          Método BorrarTracker
  * 0.07, 20/05/2019:
  *          Eliminar algunas variables que ahora están en la clase ListaDeComprobaciones
+ * 0.08, 22/05/2019:
+ *          Método ElegirHabito y ElegirFecha para que la opción "Actualizar" empiece a
+ *          ser operativa
  */
- 
+
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -37,7 +41,6 @@ class Tracker : IPantallaMostrable
     int opcion;
 
     DateTime ahora;
-    string mesActual;
     int anyoActual;
     int numeroDeDias;
 
@@ -74,7 +77,7 @@ class Tracker : IPantallaMostrable
     public int GetOpcion() { return opcion; }
     public void SetOpcion(int opcion) { this.opcion = opcion; }
 
-    public virtual void Dibujar()
+    public virtual void Dibujar(int ranuraElegida)
     {
         Console.Clear();
 
@@ -90,7 +93,7 @@ class Tracker : IPantallaMostrable
         }
         Console.WriteLine();
 
-        DibujarTabla();
+        DibujarTabla(ranuraElegida);
 
         DibujarOpcion(5, 38, 0);
         DibujarOpcion(24, 38, 1);
@@ -141,7 +144,7 @@ class Tracker : IPantallaMostrable
         return -1;
     }
 
-    public void DibujarMes(int mes)
+    public void DibujarMes(int mes, int yInicialDibujo = 0)
     {
         int yInicial = -1;
         int xInicial = -1;
@@ -199,17 +202,18 @@ class Tracker : IPantallaMostrable
 
         for (int i = yInicial; i < yInicial + 4; i++)
         {
-            Console.SetCursorPosition(xInicial, i - yInicial);
+            Console.SetCursorPosition(xInicial, i - yInicial + yInicialDibujo);
             Console.WriteLine(mesesDibujados[i]);
         }
 
     }
 
-    public void DibujarAño(string anyo)
+    public void DibujarAño(string anyo, int xInicialDibujo = 60, int yInicialDibujo = 0)
     {
         int xInicial = 60;
         int yInicial = -1;
-        foreach(char numero in anyo)
+
+        foreach (char numero in anyo)
         {
             switch(numero)
             {
@@ -247,17 +251,19 @@ class Tracker : IPantallaMostrable
 
             for(int j = yInicial; j < yInicial + 4; j++)
             {
-                Console.SetCursorPosition(xInicial, j - yInicial);
+                Console.SetCursorPosition(xInicialDibujo,
+                                    j - yInicial + yInicialDibujo);
                 Console.WriteLine(numerosDibujados[j]);
             }
             xInicial += 7;
         }
     }
 
-    public void DibujarTabla()
+    public void DibujarTabla(int ranuraElegida)
     {
-        /* Para corregir
+        string[] datos = File.ReadAllLines(@"data\meses" + ranuraElegida + ".txt");
         int numeroDeLetrasDelHabito;
+
         for (int i = 0; i < numeroDeHabitos; i++)
         {
             if (habitos[i].Length <= 20)
@@ -279,11 +285,11 @@ class Tracker : IPantallaMostrable
             Console.Write("|");
             for (int j = 0; j < numeroDeDias; j++)
             {
-                if (casillas[i][j] == 'O')
+                if (datos[i + 1][j] == 'O')
                 {
                     Console.BackgroundColor = ConsoleColor.Blue;
                 }
-                else if (casillas[i][j] == 'X')
+                else if (datos[i + 1][j] == 'X')
                 {
                     Console.BackgroundColor = ConsoleColor.Red;
                 }
@@ -293,7 +299,7 @@ class Tracker : IPantallaMostrable
                 Console.Write("|");
             }
             Console.WriteLine();
-        }*/
+        }
     }
 
     public void BorrarTracker()
@@ -319,12 +325,100 @@ class Tracker : IPantallaMostrable
         Thread.Sleep(300);
     }
 
-    public void ActualizarTracker()
+    public void ActualizarTracker(int ranuraElegida)
     {
-        //Elegir hábito
-        //Elegir año
-        //Elegir mes
-        //Elegir día
-        //Selecionar si se ha realizado o no
+        ListaDeComprobaciones comprobaciones =
+            new ListaDeComprobaciones(habitos.Length, ranuraElegida);
+
+        string habito = ElegirHabito(ranuraElegida, comprobaciones);
+        int fecha = ElegirFecha(ranuraElegida);
+        /*ElegirMes(ranuraElegida);
+        ElegirDia(ranuraElegidar);
+        MarcarHabito(ranuraElegida);*/
+    }
+
+    public string ElegirHabito(int ranuraElegida)
+    {
+        Console.Clear();
+        Console.SetCursorPosition(13, 3);
+        Console.WriteLine(@"  ___ _    ___ ___ ___   _   _ _  _   _  _   _   ___ ___ _____ ___  ");
+        Console.SetCursorPosition(13, 4);
+        Console.WriteLine(@" | __| |  |_ _/ __| __| | | | | \| | | || | /_\ | _ )_ _|_   _/ _ \ ");
+        Console.SetCursorPosition(13, 5);
+        Console.WriteLine(@" | _|| |__ | | (_ | _|  | |_| | .` | | __ |/ _ \| _ \| |  | || (_) |");
+        Console.SetCursorPosition(13, 6);
+        Console.WriteLine(@" |___|____|___\___|___|  \___/|_|\_| |_||_/_/ \_\___/___| |_| \___/ ");
+
+        for(int i = 0; i < habitos.Length; i++)
+        {
+            Console.SetCursorPosition(40, 15 + i);
+            Console.WriteLine((i + 1) + " - " + habitos[i]);
+        }
+
+        Console.SetCursorPosition(10, 37);
+        Console.Write("Elige un hábito: ");
+        int opcion = -1;
+        while(opcion == -1)
+        {
+            Console.SetCursorPosition(10 + "Elige un hábito: ".Length, 37);
+            Console.WriteLine(new String(' ', 100 - 10 - "Elige un hábito: ".Length));
+            Console.SetCursorPosition(10 + "Elige un hábito: ".Length, 37);
+            try
+            {
+                opcion = Convert.ToInt32(Console.ReadLine());
+
+                if (opcion < 1 || opcion > habitos.Length)
+                    opcion = -1;
+            }
+            catch(Exception)
+            {
+                opcion = -1;
+            }
+        }
+        return habitos[opcion - 1];
+    }
+
+    public int ElegirFecha(int ranuraElegida, ListaDeComprobaciones comprobaciones)
+    {
+        SortedList<int, char[][]> listaComprobaciones = comprobaciones.GetListaDeComprobaciones();
+
+        int yInicial = 2;
+        int xInicial = 10;
+
+        Console.Clear();
+        foreach (KeyValuePair<int, char[][]> comprobacion in listaComprobaciones)
+        {
+            int anyo, mes;
+            comprobaciones.DescrifrarClave(out anyo, out mes, comprobacion.Key);
+            DibujarMes(mes, yInicial);
+            DibujarAño("" + anyo, xInicial, yInicial);
+
+            yInicial += 5;
+        }
+
+        int opcion = -1;
+        Console.SetCursorPosition(10, 37);
+        Console.Write("Introduce una fecha \"YYYYMM\": ");
+        while (opcion == -1)
+        {
+            try
+            {
+                opcion = Convert.ToInt32(Console.ReadLine());
+
+                foreach (KeyValuePair<int, char[][]> comprobacion in listaComprobaciones)
+                {
+                    if(comprobacion.Key == opcion)
+                    {
+                        return opcion;
+                    }
+                }
+                opcion = -1;
+            }
+            catch (Exception)
+            {
+                opcion = -1;
+            }
+        }
+        return opcion;
     }
 }

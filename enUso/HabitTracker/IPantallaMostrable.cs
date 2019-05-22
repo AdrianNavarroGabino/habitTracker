@@ -12,6 +12,6 @@
 interface IPantallaMostrable
 {
     void DibujarOpcion(int yInicial, int yFinal, int opcionActual);
-    void Dibujar();
+    void Dibujar(int ranuraElegida = -1);
     int CambiarOpcion();
 }

@@ -110,7 +110,7 @@ class IntroduccionHabitos : IPantallaMostrable
         Utiles.DibujarOpcion(yInicial, yFinal, opcionActual);
     }
 
-    public void Dibujar()
+    public void Dibujar(int ranuraElegida)
     {
         Console.Clear();
 

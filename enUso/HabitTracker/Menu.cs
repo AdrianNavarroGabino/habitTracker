@@ -81,7 +81,7 @@ class Menu : IPantallaMostrable
         }
     }
 
-    public void Dibujar()
+    public void Dibujar(int a)
     {
         Console.Clear();
         Console.BackgroundColor = ConsoleColor.Black;

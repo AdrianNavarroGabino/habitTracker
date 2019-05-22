@@ -24,6 +24,12 @@
  *          la SortedList
  *          Método ActualizarLista para generar meses vacíos desde el último mes 
  *          introducido hasta el actual
+ * 0.08, 22/05/2019:
+ *          Mejorar constructor para que cree una lista nueva si no hay otra
+ *          creada anteriormente
+ *          Método CargarLista para leer la lista de comprobaciones existente
+ *          de su fichero
+ *          Método getter para la lista de comprobaciones
  */
 
 using System;
@@ -40,7 +46,6 @@ class ListaDeComprobaciones
     char[][] casillas;
 
     DateTime ahora;
-    string mesActual;
     int anyoActual;
 
     int claveDiccionario;
@@ -52,32 +57,46 @@ class ListaDeComprobaciones
     {
         this.numeroDeHabitos = numeroDeHabitos;
         this.ranuraElegida = ranuraElegida;
-        listaDeComprobaciones = new SortedList<int, char[][]>();
 
-        ahora = DateTime.Now;
-        anyoActual = ahora.Year;
-
-        claveDiccionario = GenerarClave(anyoActual, ahora.Month);
-
-        casillas = CrearMesVacio(DateTime.DaysInMonth(anyoActual, ahora.Month));
-        listaDeComprobaciones.Add(claveDiccionario, casillas);
-        ultimoMesActualizado = claveDiccionario;
-
-        StreamWriter habitosCumplidos = new StreamWriter(@"data\meses" + ranuraElegida + ".txt");
-        habitosCumplidos.WriteLine(claveDiccionario);
-        for (int i = 0; i < numeroDeHabitos; i++)
+        if (!File.Exists(@"data\meses" + ranuraElegida + ".txt"))
         {
-            for (int j = 0; j < DateTime.DaysInMonth(anyoActual, ahora.Month); j++)
+            listaDeComprobaciones = new SortedList<int, char[][]>();
+
+            ahora = DateTime.Now;
+            anyoActual = ahora.Year;
+
+            claveDiccionario = GenerarClave(anyoActual, ahora.Month);
+
+            casillas = CrearMesVacio(DateTime.DaysInMonth(anyoActual, ahora.Month));
+            listaDeComprobaciones.Add(claveDiccionario, casillas);
+            ultimoMesActualizado = claveDiccionario;
+
+            StreamWriter habitosCumplidos = new StreamWriter(@"data\meses" + ranuraElegida + ".txt");
+            habitosCumplidos.WriteLine(claveDiccionario);
+            for (int i = 0; i < numeroDeHabitos; i++)
             {
-                habitosCumplidos.Write(casillas[i][j]);
+                for (int j = 0; j < DateTime.DaysInMonth(anyoActual, ahora.Month); j++)
+                {
+                    habitosCumplidos.Write(casillas[i][j]);
+                }
+                habitosCumplidos.WriteLine();
             }
-            habitosCumplidos.WriteLine();
+            habitosCumplidos.Close();
         }
-        habitosCumplidos.Close();
+        else
+        {
+            listaDeComprobaciones = CargarLista();
+        }
+    }
+
+    public SortedList<int, char[][]> GetListaDeComprobaciones()
+    {
+        return listaDeComprobaciones;
     }
 
     public void ActualizarLista(ref int ultimaClave)
     {
+        
         DateTime hoy = DateTime.Now;
         int ultimoMes, ultimoAnyo;
         DescrifrarClave(out ultimoAnyo, out ultimoMes, ultimaClave);
@@ -86,9 +105,9 @@ class ListaDeComprobaciones
             GenerarClave(ultimoAnyo + 1, 1) :
             GenerarClave(ultimoAnyo, ultimoMes + 1);
 
-        for(int i = claveSiguiente; i <= GenerarClave(hoy.Year, hoy.Year); i++)
+        for(int i = claveSiguiente; i <= GenerarClave(hoy.Year, hoy.Month); i++)
         {
-            if(i == 13)
+            if(i % 100 == 13)
             {
                 i = i - 12 + 100;
             }
@@ -123,6 +142,33 @@ class ListaDeComprobaciones
         habitosCumplidos.Close();
     }
 
+    public SortedList<int, char[][]> CargarLista()
+    {
+        int numeroDeHabitos =
+            File.ReadAllLines(@"data\ranura" + ranuraElegida + ".txt").Length;
+        string[] datos = File.ReadAllLines(@"data\meses" + ranuraElegida + ".txt");
+        SortedList<int, char[][]> listaDeComprobaciones = new SortedList<int, char[][]>();
+
+        for (int i = 0; i < datos.Length / (numeroDeHabitos + 1); i++)
+        {
+            char[][] casillasAux = new char[numeroDeHabitos][];
+
+            for(int j = 0; j < numeroDeHabitos; j++)
+            {
+                casillasAux[j] = new char[datos[i + j + 1].Length];
+
+                for(int k = 0; k < datos[i + j + 1].Length; k++)
+                {
+                    casillasAux[j][k] = datos[i + j + 1][k];
+                }
+            }
+
+            listaDeComprobaciones.Add(Convert.ToInt32(datos[i]), casillasAux);
+        }
+
+        return listaDeComprobaciones;
+    }
+
     public int GenerarClave(int anyo, int mes)
     {
         return Convert.ToInt32(anyo +
@@ -145,7 +191,7 @@ class ListaDeComprobaciones
 
             for (int j = 0; j < numeroDeDias; j++)
             {
-                casillas[i][j] = ' ';
+                casillas[i][j] = '-';
             }
         }
 

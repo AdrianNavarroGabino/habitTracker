@@ -27,6 +27,11 @@
  *          numeroDeHabitos y pasarla por referencia en la llamada del
  *          método GuardarHabitos
  *          Añadir los métodos necesarios de la clase ListaDeComprobaciones
+ * 0.08, 22/05/2019:
+ *          Borrar el fichero con la lista de comprobaciones cuando se
+ *          selecciona la opción "borrar"
+ *          En el método EjecutarCargarTracker, cargar y actualizar la
+ *          lista de comprobaciones.
  */
 
 using System;
@@ -44,7 +49,7 @@ class HabitTracker
     ModificacionDeDatos modificarDatos;
     Salir salir;
     Menu menu;
-    ListaDeComprobaciones listaDeComprobaciones;
+    static ListaDeComprobaciones listaDeComprobaciones;
 
     static int numeroDeHabitos;
     static int ultimaClave;
@@ -68,7 +73,7 @@ class HabitTracker
             menu = new Menu();
             do
             {
-                menu.Dibujar();
+                menu.Dibujar(-1);
                 opcion = menu.CambiarOpcion();
             } while (opcion == -1);
 
@@ -102,7 +107,7 @@ class HabitTracker
 
         do
         {
-            nuevoTracker.Dibujar();
+            nuevoTracker.Dibujar(ranuraElegida);
             ranuraElegida = nuevoTracker.CambiarOpcion();
         } while (ranuraElegida == -1);
 
@@ -125,7 +130,7 @@ class HabitTracker
 
         do
         {
-            introducirHabitos.Dibujar();
+            introducirHabitos.Dibujar(-1);
             do
             {
                 introducirHabitos.SeguirIntroduciendo();
@@ -144,12 +149,14 @@ class HabitTracker
 
         while (opcionTracker != 4)
         {
-            tracker.Dibujar();
+            tracker.Dibujar(ranuraElegida);
             opcionTracker = tracker.CambiarOpcion();
-
+            
             switch (opcionTracker)
             {
                 case 0:
+                    tracker.ActualizarTracker(ranuraElegida);
+                    break;
                 case 1:
                 case 2:
                 case 3:
@@ -163,6 +170,7 @@ class HabitTracker
                         if (borrar == 0)
                         {
                             File.Delete(@"data\ranura" + ranuraElegida + ".txt");
+                            File.Delete(@"data\meses" + ranuraElegida + ".txt");
                             opcionTracker = 4;
                         }
                     }
@@ -180,12 +188,15 @@ class HabitTracker
 
         do
         {
-            cargarTracker.Dibujar();
+            cargarTracker.Dibujar(ranuraElegida);
             ranuraElegida = cargarTracker.CambiarOpcion();
         } while (ranuraElegida == -1);
         if (ranuraElegida != Utiles.VOLVER)
         {
+
+            listaDeComprobaciones = new ListaDeComprobaciones(numeroDeHabitos, ranuraElegida);
             trackerCargado = new TrackerCargado(ranuraElegida);
+            ultimaClave = listaDeComprobaciones.GenerarClave(DateTime.Now.Year, DateTime.Now.Month);
             listaDeComprobaciones.ActualizarLista(ref ultimaClave);
             EjecutarTrackerCargado(ranuraElegida);
         }
@@ -197,12 +208,14 @@ class HabitTracker
 
         while (opcionTracker != 4)
         {
-            trackerCargado.Dibujar();
+            trackerCargado.Dibujar(ranuraElegida);
             opcionTracker = trackerCargado.CambiarOpcion();
 
             switch (opcionTracker)
             {
                 case 0:
+                    trackerCargado.ActualizarTracker(ranuraElegida);
+                    break;
                 case 1:
                 case 2:
                 case 3:
@@ -216,6 +229,7 @@ class HabitTracker
                         if (borrar == 0)
                         {
                             File.Delete(@"data\ranura" + ranuraElegida + ".txt");
+                            File.Delete(@"data\meses" + ranuraElegida + ".txt");
                             opcionTracker = 4;
                         }
                     }

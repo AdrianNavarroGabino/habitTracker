@@ -12,3 +12,17 @@ C:\Users\Adrian\Desktop\Habit Tracker\HabitTracker\HabitTracker\obj\Debug\HabitT
 C:\Users\Adrian\Desktop\Habit Tracker\HabitTracker\HabitTracker\obj\Debug\HabitTracker.csproj.CoreCompileInputs.cache
 C:\Users\Adrian\Desktop\Habit Tracker\HabitTracker\HabitTracker\obj\Debug\HabitTracker.exe
 C:\Users\Adrian\Desktop\Habit Tracker\HabitTracker\HabitTracker\obj\Debug\HabitTracker.pdb
+C:\Users\Adrián Navarro\Desktop\HabitTracker\HabitTracker\bin\Debug\HabitTracker.exe.config
+C:\Users\Adrián Navarro\Desktop\HabitTracker\HabitTracker\bin\Debug\HabitTracker.exe
+C:\Users\Adrián Navarro\Desktop\HabitTracker\HabitTracker\bin\Debug\HabitTracker.pdb
+C:\Users\Adrián Navarro\Desktop\HabitTracker\HabitTracker\obj\Debug\HabitTracker.csprojAssemblyReference.cache
+C:\Users\Adrián Navarro\Desktop\HabitTracker\HabitTracker\obj\Debug\HabitTracker.csproj.CoreCompileInputs.cache
+C:\Users\Adrián Navarro\Desktop\HabitTracker\HabitTracker\obj\Debug\HabitTracker.exe
+C:\Users\Adrián Navarro\Desktop\HabitTracker\HabitTracker\obj\Debug\HabitTracker.pdb
+C:\Users\Adrian\Documents\HabitTracker\HabitTracker\bin\Debug\HabitTracker.exe.config
+C:\Users\Adrian\Documents\HabitTracker\HabitTracker\bin\Debug\HabitTracker.exe
+C:\Users\Adrian\Documents\HabitTracker\HabitTracker\bin\Debug\HabitTracker.pdb
+C:\Users\Adrian\Documents\HabitTracker\HabitTracker\obj\Debug\HabitTracker.csprojAssemblyReference.cache
+C:\Users\Adrian\Documents\HabitTracker\HabitTracker\obj\Debug\HabitTracker.csproj.CoreCompileInputs.cache
+C:\Users\Adrian\Documents\HabitTracker\HabitTracker\obj\Debug\HabitTracker.exe
+C:\Users\Adrian\Documents\HabitTracker\HabitTracker\obj\Debug\HabitTracker.pdb

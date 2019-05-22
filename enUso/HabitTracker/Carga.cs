@@ -56,7 +56,7 @@ class Carga : IPantallaMostrable
         return -1;
     }
 
-    public void Dibujar()
+    public void Dibujar(int ranuraElegida)
     {
         Console.Clear();
 

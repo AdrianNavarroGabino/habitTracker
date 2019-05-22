@@ -52,7 +52,7 @@ class NuevoTracker : Tracker, IPantallaMostrable
         }
     }
 
-    public override void Dibujar()
+    public override void Dibujar(int ranuraElegida)
     {
         Console.Clear();
 
