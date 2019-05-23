@@ -29,20 +29,16 @@ using System.Threading;
 
 class Tracker : IPantallaMostrable
 {
-    static string[] mes = {"enero", "febrero", "marzo",
-                "abril", "mayo", "junio",
-                "julio", "agosto", "septiembre",
-                "octubre", "noviembre", "diciembre"};
-    string[] opciones = { "ACTUALIZAR", "MES ANTERIOR", "MES SIGUIENTE", "BORRAR TRACKER", "VOLVER" };
-    string[] habitos;
-    string[] mesesDibujados;
-    string[] numerosDibujados;
-    int numeroDeHabitos;
-    int opcion;
+    protected string[] opciones = { "ACTUALIZAR", "MES ANTERIOR", "MES SIGUIENTE", "BORRAR TRACKER", "VOLVER" };
+    protected string[] habitos;
+    protected string[] mesesDibujados;
+    
+    protected int numeroDeHabitos;
+    protected int opcion;
 
-    DateTime ahora;
-    int anyoActual;
-    int numeroDeDias;
+    protected DateTime ahora;
+    protected int anyoActual;
+    protected int numeroDeDias;
 
     protected string[] ranuras;
     public static bool[] ranuraVacia;
@@ -51,7 +47,6 @@ class Tracker : IPantallaMostrable
     {
         habitos = File.ReadAllLines(@"data\ranura" + ranuraElegida + ".txt");
         mesesDibujados = File.ReadAllLines(@"data\meses.txt");
-        numerosDibujados = File.ReadAllLines(@"data\numeros.txt");
         numeroDeHabitos = habitos.Length;
         opcion = 0;
 
@@ -82,7 +77,7 @@ class Tracker : IPantallaMostrable
         Console.Clear();
 
         DibujarMes(ahora.Month);
-        DibujarAño("" + anyoActual);
+        Utiles.DibujarAnyo("" + anyoActual);
         Console.WriteLine();
 
         for(int i = 0; i < 20; i++)
@@ -208,57 +203,6 @@ class Tracker : IPantallaMostrable
 
     }
 
-    public void DibujarAño(string anyo, int xInicialDibujo = 60, int yInicialDibujo = 0)
-    {
-        int xInicial = 60;
-        int yInicial = -1;
-
-        foreach (char numero in anyo)
-        {
-            switch(numero)
-            {
-                case '0':
-                    yInicial = 0;
-                    break;
-                case '1':
-                    yInicial = 4;
-                    break;
-                case '2':
-                    yInicial = 8;
-                    break;
-                case '3':
-                    yInicial = 12;
-                    break;
-                case '4':
-                    yInicial = 16;
-                    break;
-                case '5':
-                    yInicial = 20;
-                    break;
-                case '6':
-                    yInicial = 24;
-                    break;
-                case '7':
-                    yInicial = 28;
-                    break;
-                case '8':
-                    yInicial = 32;
-                    break;
-                case '9':
-                    yInicial = 36;
-                    break;
-            }
-
-            for(int j = yInicial; j < yInicial + 4; j++)
-            {
-                Console.SetCursorPosition(xInicialDibujo,
-                                    j - yInicial + yInicialDibujo);
-                Console.WriteLine(numerosDibujados[j]);
-            }
-            xInicial += 7;
-        }
-    }
-
     public void DibujarTabla(int ranuraElegida)
     {
         string[] datos = File.ReadAllLines(@"data\meses" + ranuraElegida + ".txt");
@@ -330,8 +274,8 @@ class Tracker : IPantallaMostrable
         ListaDeComprobaciones comprobaciones =
             new ListaDeComprobaciones(habitos.Length, ranuraElegida);
 
-        string habito = ElegirHabito(ranuraElegida, comprobaciones);
-        int fecha = ElegirFecha(ranuraElegida);
+        string habito = ElegirHabito(ranuraElegida);
+        int fecha = ElegirFecha(ranuraElegida, comprobaciones);
         /*ElegirMes(ranuraElegida);
         ElegirDia(ranuraElegidar);
         MarcarHabito(ranuraElegida);*/
@@ -391,7 +335,7 @@ class Tracker : IPantallaMostrable
             int anyo, mes;
             comprobaciones.DescrifrarClave(out anyo, out mes, comprobacion.Key);
             DibujarMes(mes, yInicial);
-            DibujarAño("" + anyo, xInicial, yInicial);
+            Utiles.DibujarAnyo("" + anyo, xInicial, yInicial);
 
             yInicial += 5;
         }

@@ -36,6 +36,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 
 class HabitTracker
 {
@@ -53,10 +54,12 @@ class HabitTracker
 
     static int numeroDeHabitos;
     static int ultimaClave;
+    public const int ANCHO_PANTALLA = 100;
+    public const int ALTO_PANTALLA = 40;
 
     public HabitTracker()
     {
-        Console.SetWindowSize(100, 40);
+        Console.SetWindowSize(ANCHO_PANTALLA, ALTO_PANTALLA);
         
         tuAnyoEnPixeles = new TuAnyoEnPixeles();
         verResumen = new Resumen();
@@ -93,7 +96,10 @@ class HabitTracker
             case 1:
                 EjecutarCargarTracker();
                 break;
-            case 2: break;
+            case 2:
+                tuAnyoEnPixeles.Dibujar();
+                Thread.Sleep(100);
+                break;
             case 3: break;
             case 4: break;
         }
