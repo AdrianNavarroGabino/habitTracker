@@ -17,6 +17,19 @@
 *           Método Dibujar que dibuja el año actual con ASCII ART como cabecera
 *           Método DibujarOpciones, que escribe las opciones en el final de la
 *           pantalla, aún no están operativos.
+* 0.10, 24/05/2019:
+*           Mejorar métodos DibujarOpcion y CambiarOpcion
+*           Método DibujarPortadaMeses
+*           Método DibujarMeses
+*           Método CambiarOpcionMes
+*           Método DibujarPortadaDias
+*           Método DibujarDias
+*           Método CambiarOpcionDias
+*           Métodos DibujarPortadaBuenDiaParte1 y DibujarPortadaBuenDiaParte2
+*           Método EsUnBuenDia
+*           Método Actualizar, que utiliza los métodos anteriores para
+*           preguntar qué año se quiere modificar, qué día y preguntar
+*           si el día elegido ha sido bueno o no.
 */
 
 using System;
@@ -27,13 +40,16 @@ class TuAnyoEnPixeles
     protected int anyoActual;
     protected string[] comprobaciones;
     protected string[] datosComprobaciones;
-    protected static int opcion;
+    protected int opcion;
     protected string[] opciones = { "ACTUALIZAR", "VOLVER" };
+    public const int ACTUALIZAR = 0;
+    public const int VOLVER = 1;
 
     public TuAnyoEnPixeles()
     {
         anyoActual = DateTime.Now.Year;
         comprobaciones = new string[12];
+        opcion = 0;
 
         if (!File.Exists(@"data\anyo.txt"))
         {
@@ -57,6 +73,7 @@ class TuAnyoEnPixeles
 
     public int GetAnyoActual() { return anyoActual; }
     public string[] GetComprobaciones() { return comprobaciones; }
+    public int GetNumeroDeOpciones() { return opciones.Length; }
 
     public void Dibujar()
     {
@@ -64,7 +81,6 @@ class TuAnyoEnPixeles
         
         Utiles.DibujarAnyo("" + anyoActual, HabitTracker.ANCHO_PANTALLA / 2 - 14);
         DibujarTabla();
-        DibujarOpciones();
     }
 
     public void DibujarTabla()
@@ -97,32 +113,24 @@ class TuAnyoEnPixeles
         }
     }
 
-    public void DibujarOpciones(int opcionActual = 0)
+    public void DibujarOpcion(int opcionActual)
     {
         int numeroDeOpciones = opciones.Length;
 
         int separacion = HabitTracker.ANCHO_PANTALLA / (numeroDeOpciones + 1);
 
-        for(int i = 0; i < numeroDeOpciones; i++)
+        
+        Console.SetCursorPosition(separacion * (opcionActual + 1) - (opciones[opcionActual].Length / 2),
+            HabitTracker.ALTO_PANTALLA - 3);
+        if(opcion == opcionActual)
         {
-            Console.SetCursorPosition(separacion * (i + 1) - (opciones[i].Length / 2),
-                HabitTracker.ALTO_PANTALLA - 3);
-            if(opcionActual == i)
-            {
-                Console.BackgroundColor = ConsoleColor.Blue;
-            }
-            Console.WriteLine(opciones[i]);
-            Console.BackgroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.Blue;
         }
-
-        ConsoleKeyInfo tecla = Console.ReadKey(true);
-        if (tecla.Key == ConsoleKey.LeftArrow || tecla.Key == ConsoleKey.RightArrow)
-        {
-            opcionActual = (opcionActual + 1) % 2;
-        }
+        Console.WriteLine(opciones[opcionActual]);
+        Console.BackgroundColor = ConsoleColor.Black;
     }
 
-    /*public int CambiarOpcion()
+    public int CambiarOpcion()
     {
         ConsoleKeyInfo tecla = Console.ReadKey(true);
         if (tecla.Key == ConsoleKey.LeftArrow || tecla.Key == ConsoleKey.RightArrow)
@@ -134,5 +142,252 @@ class TuAnyoEnPixeles
             return opcion;
 
         return -1;
-    }*/
+    }
+
+    public void Actualizar()
+    {
+        int mes, dia;
+        opcion = 0;
+
+        DibujarPortadaMeses();
+
+        do
+        {
+            for (int i = 0; i < 12; i++)
+            {
+                DibujarMeses(i);
+            }
+            mes = CambiarOpcionMes();
+        } while (mes == -1);
+
+        opcion = 1;
+
+        DibujarPortadaDias();
+
+        do
+        {
+            for(int i = 1; i <= DateTime.DaysInMonth(2019,mes + 1); i++)
+            {
+                DibujarDias(i, i / 10);
+            }
+            dia = CambiarOpcionDia(DateTime.DaysInMonth(2019, mes + 1));
+        } while (dia == -1);
+
+        EsUnBuenDia();
+        /*int dia = ElegirDia();
+        bool buenDia = EsUnBuenDia();*/
+    }
+
+    public void DibujarPortadaMeses()
+    {
+        Console.Clear();
+
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   __  __ ___ ___ _ ".Length /
+            2), 3);
+        Console.WriteLine(@"  ___ _    ___ ___ ___   _   _ _  _   __  __ ___ ___ _ ");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   __  __ ___ ___ _ ".Length /
+            2), 4);
+        Console.WriteLine(@" | __| |  |_ _/ __| __| | | | | \| | |  \/  | __/ __(_)");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   __  __ ___ ___ _ ".Length /
+            2), 5);
+        Console.WriteLine(@" | _|| |__ | | (_ | _|  | |_| | .` | | |\/| | _|\__ \_ ");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   __  __ ___ ___ _ ".Length /
+            2), 6);
+        Console.WriteLine(@" |___|____|___\___|___|  \___/|_|\_| |_|  |_|___|___(_)");
+    }
+
+    public void DibujarMeses(int opcionActual)
+    {
+        if(opcionActual == opcion)
+        {
+            Console.BackgroundColor = ConsoleColor.Blue;
+        }
+
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 2 - Utiles.mes[opcionActual].Length / 2, opcionActual * 2 + 12);
+        Console.WriteLine(Utiles.mes[opcionActual].Substring(0, 1).ToUpper() + Utiles.mes[opcionActual].Substring(1));
+        Console.BackgroundColor = ConsoleColor.Black;
+    }
+
+    public int CambiarOpcionMes()
+    {
+        ConsoleKeyInfo tecla = Console.ReadKey(true);
+        if (tecla.Key == ConsoleKey.DownArrow)
+        {
+            opcion = (opcion + 1) % 12;
+        }
+        if (tecla.Key == ConsoleKey.UpArrow)
+        {
+            if (opcion == 0)
+            {
+                opcion = 11;
+            }
+            else
+            {
+                opcion--;
+            }
+        }
+
+        if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
+            return opcion;
+
+        return -1;
+    }
+
+    public void DibujarPortadaDias()
+    {
+        Console.Clear();
+
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ".Length /
+            2), 3);
+        Console.WriteLine(@"  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ".Length /
+            2), 4);
+        Console.WriteLine(@" | __| |  |_ _/ __| __| | | | | \| | |   \_ _| /_\ (_)");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ".Length /
+            2), 5);
+        Console.WriteLine(@" | _|| |__ | | (_ | _|  | |_| | .` | | |) | | / _ \ _ ");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ".Length /
+            2), 6);
+        Console.WriteLine(@" |___|____|___\___|___|  \___/|_|\_| |___/___/_/ \_(_)");
+    }
+
+    public void DibujarDias(int opcionActual, int decenas)
+    {
+        if (opcionActual == opcion)
+        {
+            Console.BackgroundColor = ConsoleColor.Blue;
+        }
+
+        if(opcionActual % 10 == 0)
+            Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 5 *
+                (decenas - 1) + HabitTracker.ANCHO_PANTALLA / 6,
+                (opcionActual - 1) % 10 * 3 + 10);
+        else
+            Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 5 *
+                decenas + HabitTracker.ANCHO_PANTALLA / 6,
+                (opcionActual - 1) % 10 * 3 + 10);
+        Console.WriteLine(opcionActual);
+        Console.BackgroundColor = ConsoleColor.Black;
+    }
+
+    public int CambiarOpcionDia(int numeroDeDias)
+    {
+        ConsoleKeyInfo tecla = Console.ReadKey(true);
+        switch (tecla.Key)
+        {
+            case ConsoleKey.DownArrow:
+                if (opcion == numeroDeDias)
+                    opcion = 1;
+                else
+                    opcion++;
+                break;
+            case ConsoleKey.UpArrow:
+                if (opcion == 1)
+                    opcion = numeroDeDias;
+                else
+                    opcion--;
+                break;
+            case ConsoleKey.RightArrow:
+                if (((opcion - 1) / 10) == (numeroDeDias / 10))
+                    opcion %= 10;
+                else
+                {
+                    if (opcion + 10 <= numeroDeDias)
+                        opcion += 10;
+                    else
+                        opcion = numeroDeDias;
+                }
+                break;
+            case ConsoleKey.LeftArrow:
+                if ((opcion - 1) / 10 == 0)
+                {
+                    if (opcion + numeroDeDias / 10 * 10 >= numeroDeDias)
+                        opcion = numeroDeDias;
+                    else
+                        opcion = opcion + numeroDeDias / 10 * 10;
+                }
+                else
+                    opcion -= 10;
+                break;
+            case ConsoleKey.Spacebar:
+            case ConsoleKey.Enter:
+                return opcion;
+        }
+
+        return -1;
+    }
+
+    public void DibujarPortadaBuenDiaParte1()
+    {
+        Console.Clear();
+
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("   _  _  _   _     ___ ___ ___   ___    _   _ _  _ ".Length /
+            2), 3);
+        Console.WriteLine(@"   _  _  _   _     ___ ___ ___   ___    _   _ _  _ ");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("   _  _  _   _     ___ ___ ___   ___    _   _ _  _ ".Length /
+            2), 4);
+        Console.WriteLine(@"  (_)| || | /_\   / __|_ _|   \ / _ \  | | | | \| |");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("   _  _  _   _     ___ ___ ___   ___    _   _ _  _ ".Length /
+            2), 5);
+        Console.WriteLine(@" / /_| __ |/ _ \  \__ \| || |) | (_) | | |_| | .` |");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("   _  _  _   _     ___ ___ ___   ___    _   _ _  _ ".Length /
+            2), 6);
+        Console.WriteLine(@" \___|_||_/_/ \_\ |___/___|___/ \___/   \___/|_|\_|");
+    }
+
+    public void DibujarPortadaBuenDiaParte2()
+    {
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _   _ ___ _  _   ___ ___   _  ___ ".Length /
+            2), 8);
+        Console.WriteLine(@"  ___ _   _ ___ _  _   ___ ___   _  ___ ");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _   _ ___ _  _   ___ ___   _  ___ ".Length /
+            2), 9);
+        Console.WriteLine(@" | _ ) | | | __| \| | |   \_ _| /_\|__ \");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _   _ ___ _  _   ___ ___   _  ___ ".Length /
+            2), 10);
+        Console.WriteLine(@"| _ \ |_| | _|| .` | | |) | | / _ \ /_/");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _   _ ___ _  _   ___ ___   _  ___ ".Length /
+            2), 11);
+        Console.WriteLine(@" |___/\___/|___|_|\_| |___/___/_/ \_(_) ");
+    }
+
+    public void EsUnBuenDia()
+    {
+        DibujarPortadaBuenDiaParte1();
+        DibujarPortadaBuenDiaParte2();
+
+        Console.ReadLine();
+    }
 }

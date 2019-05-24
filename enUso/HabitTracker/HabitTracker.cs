@@ -97,8 +97,20 @@ class HabitTracker
                 EjecutarCargarTracker();
                 break;
             case 2:
+                int opcionAnyo;
+
                 tuAnyoEnPixeles.Dibujar();
-                Thread.Sleep(100);
+                do
+                {
+                    for (int i = 0; i < tuAnyoEnPixeles.GetNumeroDeOpciones(); i++)
+                        tuAnyoEnPixeles.DibujarOpcion(i);
+                    opcionAnyo = tuAnyoEnPixeles.CambiarOpcion();
+                } while (opcionAnyo == -1);
+
+                if(opcionAnyo == TuAnyoEnPixeles.ACTUALIZAR)
+                {
+                    tuAnyoEnPixeles.Actualizar();
+                }
                 break;
             case 3: break;
             case 4: break;
