@@ -37,7 +37,6 @@ class Menu : IPantallaMostrable
         try
         {
             StreamReader fichero = new StreamReader(@"data\menu.txt");
-
             string linea;
 
             do
@@ -49,6 +48,7 @@ class Menu : IPantallaMostrable
                     menu.Add(linea);
                 }
             } while (linea != null);
+            fichero.Close();
 
             opcion = 0;
         }

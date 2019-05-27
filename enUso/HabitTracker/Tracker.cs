@@ -20,6 +20,10 @@
  * 0.08, 22/05/2019:
  *          Método ElegirHabito y ElegirFecha para que la opción "Actualizar" empiece a
  *          ser operativa
+ * 0.11, 27/05/2019:
+ *          Limitar opciones al mes actual (mejorable en próximas versiones)
+ *          Corregir fallos de selección de opciones
+ *          Mejoras en actualizar hábito
  */
 
 using System;
@@ -29,7 +33,11 @@ using System.Threading;
 
 class Tracker : IPantallaMostrable
 {
-    protected string[] opciones = { "ACTUALIZAR", "MES ANTERIOR", "MES SIGUIENTE", "BORRAR TRACKER", "VOLVER" };
+    protected string[] opciones = { "ACTUALIZAR", "ACTUALIZAR HOY", "BORRAR TRACKER", "VOLVER" };
+    public const int ACTUALIZAR = 0;
+    public const int ACTUALIZAR_HOY = 1;
+    public const int BORRAR_TRACKER = 2;
+    public const int VOLVER = 3;
     protected string[] habitos;
     protected string[] mesesDibujados;
     
@@ -90,11 +98,10 @@ class Tracker : IPantallaMostrable
 
         DibujarTabla(ranuraElegida);
 
-        DibujarOpcion(5, 38, 0);
-        DibujarOpcion(24, 38, 1);
-        DibujarOpcion(43, 38, 2);
-        DibujarOpcion(62, 38, 3);
-        DibujarOpcion(81, 38, 4);
+        for (int i = 0; i < opciones.Length; i++)
+        {
+            DibujarOpcion(i * HabitTracker.ANCHO_PANTALLA / opciones.Length + 7, HabitTracker.ALTO_PANTALLA - 2, i);
+        }
 
         Thread.Sleep(300);
     }
@@ -122,14 +129,14 @@ class Tracker : IPantallaMostrable
         ConsoleKeyInfo tecla = Console.ReadKey(true);
         if (tecla.Key == ConsoleKey.RightArrow)
         {
-            opcion = (opcion + 1) % 5;
+            opcion = (opcion + 1) % opciones.Length;
         }
         if(tecla.Key == ConsoleKey.LeftArrow)
         {
             if (opcion == 0)
-                opcion = 4;
+                opcion = opciones.Length - 1;
             else
-                opcion = (opcion - 1) % 5;
+                opcion--;
         }
         if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
         {
@@ -274,15 +281,58 @@ class Tracker : IPantallaMostrable
         ListaDeComprobaciones comprobaciones =
             new ListaDeComprobaciones(habitos.Length, ranuraElegida);
 
-        string habito = ElegirHabito(ranuraElegida);
-        int fecha = ElegirFecha(ranuraElegida, comprobaciones);
+        int habito = ElegirHabito(ranuraElegida);
+
+        if (ConfirmarHabito() == 0)
+        {
+
+        }
         /*ElegirMes(ranuraElegida);
         ElegirDia(ranuraElegidar);
         MarcarHabito(ranuraElegida);*/
     }
 
-    public string ElegirHabito(int ranuraElegida)
+    public void DibujarHabito(int opcionActual)
     {
+        if (opcionActual == opcion)
+        {
+            Console.BackgroundColor = ConsoleColor.Blue;
+        }
+
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 2 - habitos[opcionActual].Length / 2, opcionActual * 2 + 12);
+        Console.WriteLine(habitos[opcionActual]);
+        Console.BackgroundColor = ConsoleColor.Black;
+    }
+
+    public int CambiarOpcionHabito()
+    {
+        ConsoleKeyInfo tecla = Console.ReadKey(true);
+        if (tecla.Key == ConsoleKey.DownArrow)
+        {
+            opcion = (opcion + 1) % habitos.Length;
+        }
+        if (tecla.Key == ConsoleKey.UpArrow)
+        {
+            if (opcion == 0)
+            {
+                opcion = habitos.Length - 1;
+            }
+            else
+            {
+                opcion--;
+            }
+        }
+
+        if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
+            return opcion;
+
+        return -1;
+    }
+
+    public int ElegirHabito(int ranuraElegida)
+    {
+        int habitoElegido;
+
         Console.Clear();
         Console.SetCursorPosition(13, 3);
         Console.WriteLine(@"  ___ _    ___ ___ ___   _   _ _  _   _  _   _   ___ ___ _____ ___  ");
@@ -293,76 +343,65 @@ class Tracker : IPantallaMostrable
         Console.SetCursorPosition(13, 6);
         Console.WriteLine(@" |___|____|___\___|___|  \___/|_|\_| |_||_/_/ \_\___/___| |_| \___/ ");
 
-        for(int i = 0; i < habitos.Length; i++)
+        do
         {
-            Console.SetCursorPosition(40, 15 + i);
-            Console.WriteLine((i + 1) + " - " + habitos[i]);
-        }
-
-        Console.SetCursorPosition(10, 37);
-        Console.Write("Elige un hábito: ");
-        int opcion = -1;
-        while(opcion == -1)
-        {
-            Console.SetCursorPosition(10 + "Elige un hábito: ".Length, 37);
-            Console.WriteLine(new String(' ', 100 - 10 - "Elige un hábito: ".Length));
-            Console.SetCursorPosition(10 + "Elige un hábito: ".Length, 37);
-            try
+            for (int i = 0; i < habitos.Length; i++)
             {
-                opcion = Convert.ToInt32(Console.ReadLine());
+                DibujarHabito(i);
+            }
+            habitoElegido = CambiarOpcionHabito();
+        } while (habitoElegido == -1);
 
-                if (opcion < 1 || opcion > habitos.Length)
-                    opcion = -1;
-            }
-            catch(Exception)
-            {
-                opcion = -1;
-            }
-        }
-        return habitos[opcion - 1];
+        return habitoElegido;
     }
 
-    public int ElegirFecha(int ranuraElegida, ListaDeComprobaciones comprobaciones)
+    public int ConfirmarHabito()
     {
-        SortedList<int, char[][]> listaComprobaciones = comprobaciones.GetListaDeComprobaciones();
-
-        int yInicial = 2;
-        int xInicial = 10;
+        int opcionActual = 0;
+        int confirmar = -1;
 
         Console.Clear();
-        foreach (KeyValuePair<int, char[][]> comprobacion in listaComprobaciones)
+
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("   _  _    ___    _  _   _   ___   _  _ ___ ___ _  _  ___ ___ ".Length /
+            2), 3);
+        Console.WriteLine(@"   _  _    ___    _  _   _   ___   _  _ ___ ___ _  _  ___ ___ ");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("   _  _    ___    _  _   _   ___   _  _ ___ ___ _  _  ___ ___ ".Length /
+            2), 4);
+        Console.WriteLine(@"  (_)| |  / _ \  | || | /_\ / __| | || | __/ __| || |/ _ \__ \");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("   _  _    ___    _  _   _   ___   _  _ ___ ___ _  _  ___ ___ ".Length /
+            2), 5);
+        Console.WriteLine(@" / /_| |_| (_) | | __ |/ _ \\__ \ | __ | _| (__| __ | (_) |/_/");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("   _  _    ___    _  _   _   ___   _  _ ___ ___ _  _  ___ ___ ".Length /
+            2), 6);
+        Console.WriteLine(@" \___|____\___/  |_||_/_/ \_\___/ |_||_|___\___|_||_|\___/(_) ");
+
+        while (confirmar == -1)
         {
-            int anyo, mes;
-            comprobaciones.DescrifrarClave(out anyo, out mes, comprobacion.Key);
-            DibujarMes(mes, yInicial);
-            Utiles.DibujarAnyo("" + anyo, xInicial, yInicial);
-
-            yInicial += 5;
-        }
-
-        int opcion = -1;
-        Console.SetCursorPosition(10, 37);
-        Console.Write("Introduce una fecha \"YYYYMM\": ");
-        while (opcion == -1)
-        {
-            try
+            TuAnyoEnPixeles.DibujarSiYNo(opcionActual);
+            ConsoleKeyInfo tecla = Console.ReadKey(true);
+            if (tecla.Key == ConsoleKey.RightArrow ||
+                tecla.Key == ConsoleKey.LeftArrow)
             {
-                opcion = Convert.ToInt32(Console.ReadLine());
-
-                foreach (KeyValuePair<int, char[][]> comprobacion in listaComprobaciones)
-                {
-                    if(comprobacion.Key == opcion)
-                    {
-                        return opcion;
-                    }
-                }
-                opcion = -1;
+                opcionActual = (opcionActual + 1) % 2;
             }
-            catch (Exception)
+            if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
             {
-                opcion = -1;
+                return opcionActual;
             }
         }
-        return opcion;
+        return -1;
+    }
+
+    public void ActualizarHoy(int ranuraElegida)
+    {
+        int habito = ElegirHabito(ranuraElegida);
     }
 }

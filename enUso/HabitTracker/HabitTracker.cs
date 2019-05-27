@@ -99,18 +99,34 @@ class HabitTracker
             case 2:
                 int opcionAnyo;
 
-                tuAnyoEnPixeles.Dibujar();
                 do
                 {
-                    for (int i = 0; i < tuAnyoEnPixeles.GetNumeroDeOpciones(); i++)
-                        tuAnyoEnPixeles.DibujarOpcion(i);
-                    opcionAnyo = tuAnyoEnPixeles.CambiarOpcion();
-                } while (opcionAnyo == -1);
+                    tuAnyoEnPixeles.Dibujar();
+                    do
+                    {
+                        for (int i = 0; i < tuAnyoEnPixeles.GetNumeroDeOpciones(); i++)
+                            tuAnyoEnPixeles.DibujarOpcion(i);
+                        opcionAnyo = tuAnyoEnPixeles.CambiarOpcion();
+                    } while (opcionAnyo == -1);
 
-                if(opcionAnyo == TuAnyoEnPixeles.ACTUALIZAR)
-                {
-                    tuAnyoEnPixeles.Actualizar();
+                    if (opcionAnyo == TuAnyoEnPixeles.ACTUALIZAR)
+                    {
+                        tuAnyoEnPixeles.Actualizar();
+                    }
+                    else if (opcionAnyo == TuAnyoEnPixeles.ACTUALIZAR_HOY)
+                    {
+                        tuAnyoEnPixeles.ActualizarHoy();
+                    }
+                    else if (opcionAnyo == TuAnyoEnPixeles.BORRAR)
+                    {
+                        if (tuAnyoEnPixeles.BorrarTuAnyoEnPixeles() == 0)
+                        {
+                            File.Delete(@"data\anyo.txt");
+                            tuAnyoEnPixeles = new TuAnyoEnPixeles();
+                        }
+                    }
                 }
+                while (opcionAnyo != TuAnyoEnPixeles.VOLVER);
                 break;
             case 3: break;
             case 4: break;
@@ -165,19 +181,17 @@ class HabitTracker
     {
         int opcionTracker = -1;
 
-        while (opcionTracker != 4)
+        while (opcionTracker != Tracker.VOLVER)
         {
             tracker.Dibujar(ranuraElegida);
             opcionTracker = tracker.CambiarOpcion();
             
             switch (opcionTracker)
             {
-                case 0:
+                case Tracker.ACTUALIZAR:
                     tracker.ActualizarTracker(ranuraElegida);
                     break;
-                case 1:
-                case 2:
-                case 3:
+                case Tracker.BORRAR_TRACKER:
                     int borrar = -1;
 
                     while (borrar == -1)
@@ -189,7 +203,7 @@ class HabitTracker
                         {
                             File.Delete(@"data\ranura" + ranuraElegida + ".txt");
                             File.Delete(@"data\meses" + ranuraElegida + ".txt");
-                            opcionTracker = 4;
+                            opcionTracker = Tracker.VOLVER;
                         }
                     }
 
@@ -224,19 +238,17 @@ class HabitTracker
     {
         int opcionTracker = -1;
 
-        while (opcionTracker != 4)
+        while (opcionTracker != Tracker.VOLVER)
         {
             trackerCargado.Dibujar(ranuraElegida);
             opcionTracker = trackerCargado.CambiarOpcion();
 
             switch (opcionTracker)
             {
-                case 0:
+                case Tracker.ACTUALIZAR:
                     trackerCargado.ActualizarTracker(ranuraElegida);
                     break;
-                case 1:
-                case 2:
-                case 3:
+                case Tracker.BORRAR_TRACKER:
                     int borrar = -1;
 
                     while (borrar == -1)
@@ -248,7 +260,7 @@ class HabitTracker
                         {
                             File.Delete(@"data\ranura" + ranuraElegida + ".txt");
                             File.Delete(@"data\meses" + ranuraElegida + ".txt");
-                            opcionTracker = 4;
+                            opcionTracker = Tracker.VOLVER;
                         }
                     }
 

@@ -71,17 +71,35 @@ class ListaDeComprobaciones
             listaDeComprobaciones.Add(claveDiccionario, casillas);
             ultimoMesActualizado = claveDiccionario;
 
-            StreamWriter habitosCumplidos = new StreamWriter(@"data\meses" + ranuraElegida + ".txt");
-            habitosCumplidos.WriteLine(claveDiccionario);
-            for (int i = 0; i < numeroDeHabitos; i++)
+            if (File.Exists(@"data\meses" + ranuraElegida + ".txt"))
             {
-                for (int j = 0; j < DateTime.DaysInMonth(anyoActual, ahora.Month); j++)
+                try
                 {
-                    habitosCumplidos.Write(casillas[i][j]);
+                    StreamWriter habitosCumplidos = new StreamWriter(@"data\meses" + ranuraElegida + ".txt");
+                    habitosCumplidos.WriteLine(claveDiccionario);
+                    for (int i = 0; i < numeroDeHabitos; i++)
+                    {
+                        for (int j = 0; j < DateTime.DaysInMonth(anyoActual, ahora.Month); j++)
+                        {
+                            habitosCumplidos.Write(casillas[i][j]);
+                        }
+                        habitosCumplidos.WriteLine();
+                    }
+                    habitosCumplidos.Close();
                 }
-                habitosCumplidos.WriteLine();
+                catch (PathTooLongException)
+                {
+                    Console.WriteLine("Ruta demasiado larga");
+                }
+                catch (IOException)
+                {
+                    Console.WriteLine("IO error");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Excepción");
+                }
             }
-            habitosCumplidos.Close();
         }
         else
         {

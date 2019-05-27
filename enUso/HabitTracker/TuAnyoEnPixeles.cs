@@ -30,6 +30,17 @@
 *           Método Actualizar, que utiliza los métodos anteriores para
 *           preguntar qué año se quiere modificar, qué día y preguntar
 *           si el día elegido ha sido bueno o no.
+*           Método ActualizarHoy para mejorar la usabilidad y poder actualizar
+*           directamente el día actual
+* 0.11, 27/05/2019:
+*          Corregir errores de dibujado
+*          Confirmar la actualización de la tabla con los botones de SÍ y NO
+*          Cambiar array con los resultados de la tabla para volver a pintarla
+*          actualizada
+*          Añadir opción de borrar
+*          Hacer la opción de borrar operativa
+*          No salir de la opción Tu año en píxeles hasta que no se seleccione
+*          la opción de volver
 */
 
 using System;
@@ -41,9 +52,11 @@ class TuAnyoEnPixeles
     protected string[] comprobaciones;
     protected string[] datosComprobaciones;
     protected int opcion;
-    protected string[] opciones = { "ACTUALIZAR", "VOLVER" };
+    protected string[] opciones = { "ACTUALIZAR", "ACTUALIZAR HOY", "BORRAR", "VOLVER" };
     public const int ACTUALIZAR = 0;
-    public const int VOLVER = 1;
+    public const int ACTUALIZAR_HOY = 1;
+    public const int BORRAR = 2;
+    public const int VOLVER = 3;
 
     public TuAnyoEnPixeles()
     {
@@ -133,9 +146,16 @@ class TuAnyoEnPixeles
     public int CambiarOpcion()
     {
         ConsoleKeyInfo tecla = Console.ReadKey(true);
-        if (tecla.Key == ConsoleKey.LeftArrow || tecla.Key == ConsoleKey.RightArrow)
+        if (tecla.Key == ConsoleKey.RightArrow)
         {
-            opcion = (opcion + 1) % 2;
+            opcion = (opcion + 1) % opciones.Length;
+        }
+        if(tecla.Key == ConsoleKey.LeftArrow)
+        {
+            if (opcion != 0)
+                opcion--;
+            else
+                opcion = opciones.Length - 1;
         }
 
         if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
@@ -173,9 +193,13 @@ class TuAnyoEnPixeles
             dia = CambiarOpcionDia(DateTime.DaysInMonth(2019, mes + 1));
         } while (dia == -1);
 
-        EsUnBuenDia();
-        /*int dia = ElegirDia();
-        bool buenDia = EsUnBuenDia();*/
+        int actualizar = EsUnBuenDia();
+        
+        comprobaciones[mes] =
+            comprobaciones[mes].Substring(0, dia - 1) +
+            (actualizar == 0 ? "X" : "O") +
+            comprobaciones[mes].Substring(dia);
+        File.WriteAllLines(@"data\anyo.txt", comprobaciones);
     }
 
     public void DibujarPortadaMeses()
@@ -375,7 +399,7 @@ class TuAnyoEnPixeles
             HabitTracker.ANCHO_PANTALLA / 2 -
             ("  ___ _   _ ___ _  _   ___ ___   _  ___ ".Length /
             2), 10);
-        Console.WriteLine(@"| _ \ |_| | _|| .` | | |) | | / _ \ /_/");
+        Console.WriteLine(@" | _ \ |_| | _|| .` | | |) | | / _ \ /_/");
         Console.SetCursorPosition(
             HabitTracker.ANCHO_PANTALLA / 2 -
             ("  ___ _   _ ___ _  _   ___ ___   _  ___ ".Length /
@@ -383,11 +407,108 @@ class TuAnyoEnPixeles
         Console.WriteLine(@" |___/\___/|___|_|\_| |___/___/_/ \_(_) ");
     }
 
-    public void EsUnBuenDia()
+    public static void DibujarSiYNo(int opcionActual)
     {
+        if(opcionActual == 0)
+            Console.BackgroundColor = ConsoleColor.Blue;
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 4 -
+            ("  ___ ___ ".Length / 2), HabitTracker.ALTO_PANTALLA / 2);
+        Console.WriteLine(@"  ___ ___ ");
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 4 -
+            ("  ___ ___ ".Length / 2), HabitTracker.ALTO_PANTALLA / 2 + 1);
+        Console.WriteLine(@" / __|_ _|");
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 4 -
+            ("  ___ ___ ".Length / 2), HabitTracker.ALTO_PANTALLA / 2 + 2);
+        Console.WriteLine(@" \__ \| | ");
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 4 -
+            ("  ___ ___ ".Length / 2), HabitTracker.ALTO_PANTALLA / 2 + 3);
+        Console.WriteLine(@" |___/___|");
+        Console.BackgroundColor = ConsoleColor.Black;
+
+        if (opcionActual == 1)
+            Console.BackgroundColor = ConsoleColor.Blue;
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 4 * 3 -
+            ("  _  _  ___  ".Length / 2), HabitTracker.ALTO_PANTALLA / 2);
+        Console.WriteLine(@"  _  _  ___  ");
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 4 * 3 -
+            ("  _  _  ___  ".Length / 2), HabitTracker.ALTO_PANTALLA / 2 + 1);
+        Console.WriteLine(@" | \| |/ _ \ ");
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 4 * 3 -
+            ("  _  _  ___  ".Length / 2), HabitTracker.ALTO_PANTALLA / 2 + 2);
+        Console.WriteLine(@" | .` | (_) |");
+        Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 4 * 3 -
+            ("  _  _  ___  ".Length / 2), HabitTracker.ALTO_PANTALLA / 2 + 3);
+        Console.WriteLine(@" |_|\_|\___/ ");
+        Console.BackgroundColor = ConsoleColor.Black;
+    }
+
+    public int EsUnBuenDia()
+    {
+        int opcionActual = 0;
+        int actualizar = -1;
+
         DibujarPortadaBuenDiaParte1();
         DibujarPortadaBuenDiaParte2();
 
-        Console.ReadLine();
+        while (actualizar == -1)
+        {
+            DibujarSiYNo(opcionActual);
+            ConsoleKeyInfo tecla = Console.ReadKey(true);
+            if (tecla.Key == ConsoleKey.RightArrow ||
+                tecla.Key == ConsoleKey.LeftArrow)
+            {
+                opcionActual = (opcionActual + 1) % 2;
+            }
+            if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
+            {
+                actualizar = opcionActual;
+            }
+        }
+
+        return actualizar;
+    }
+
+    public int BorrarTuAnyoEnPixeles()
+    {
+        int opcionActual = 0;
+        int borrar = -1;
+
+        Console.Clear();
+
+        Console.SetCursorPosition(15, 10);
+        Console.WriteLine(@"   _  ___ ___ _____ _   ___   ___ ___ ___ _   _ ___  ___ ___ ");
+        Console.SetCursorPosition(15, 11);
+        Console.WriteLine(@"  (_)| __/ __|_   _/_\ / __| / __| __/ __| | | | _ \/ _ \__ \");
+        Console.SetCursorPosition(15, 12);
+        Console.WriteLine(@" / /_| _|\__ \ | |/ _ \\__ \ \__ \ _| (_ | |_| |   / (_) |/_/");
+        Console.SetCursorPosition(15, 13);
+        Console.WriteLine(@" \___|___|___/ |_/_/ \_\___/ |___/___\___|\___/|_|_\\___/(_) ");
+
+        while (borrar == -1)
+        {
+            DibujarSiYNo(opcionActual);
+            ConsoleKeyInfo tecla = Console.ReadKey(true);
+            if (tecla.Key == ConsoleKey.RightArrow ||
+                tecla.Key == ConsoleKey.LeftArrow)
+            {
+                opcionActual = (opcionActual + 1) % 2;
+            }
+            if (tecla.Key == ConsoleKey.Spacebar || tecla.Key == ConsoleKey.Enter)
+            {
+                return opcionActual;
+            }
+        }
+        return -1;
+    }
+
+    public void ActualizarHoy()
+    {
+        int actualizar = EsUnBuenDia();
+
+        comprobaciones[DateTime.Now.Month - 1] =
+                comprobaciones[DateTime.Now.Month - 1].Substring(0, DateTime.Now.Day - 1) +
+                (actualizar == 0 ? "X" : "O") +
+                comprobaciones[DateTime.Now.Month - 1].Substring(DateTime.Now.Day);
+        File.WriteAllLines(@"data\anyo.txt", comprobaciones);
     }
 }
