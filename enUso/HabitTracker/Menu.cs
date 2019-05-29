@@ -95,8 +95,8 @@ class Menu : IPantallaMostrable
         DibujarOpcion(10, 15, 1);
         DibujarOpcion(15, 20, 2);
         DibujarOpcion(20, 23, 3);
-        DibujarOpcion(23, 27, 4);
-        DibujarOpcion(27, 31, 5);
+        DibujarOpcion(23, 28, 4);
+        DibujarOpcion(28, 32, 5);
 
         Console.BackgroundColor = ConsoleColor.Black;
 

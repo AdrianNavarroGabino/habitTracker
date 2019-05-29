@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aplicacion.cs" />
+    <Compile Include="Ayuda.cs" />
     <Compile Include="Carga.cs" />
     <Compile Include="Habito.cs" />
     <Compile Include="IPantallaMostrable.cs" />

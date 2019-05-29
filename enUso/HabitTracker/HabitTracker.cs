@@ -32,6 +32,10 @@
  *          selecciona la opción "borrar"
  *          En el método EjecutarCargarTracker, cargar y actualizar la
  *          lista de comprobaciones.
+ * 0.12, 29/05/2019:
+ *          Actualizar métodos EjecutarOpcion, EjecutarTracker y
+ *          EjecutarTrackerCargado para que a opción "actualizar hoy"
+ *          empiece a ser operativa.
  */
 
 using System;
@@ -129,7 +133,14 @@ class HabitTracker
                 while (opcionAnyo != TuAnyoEnPixeles.VOLVER);
                 break;
             case 3: break;
-            case 4: break;
+            case 4:
+                Ayuda.DibujarAyudaRanuras();
+                Thread.Sleep(2000);
+                Ayuda.DibujarAyudaIntroducir();
+                Thread.Sleep(2000);
+                Ayuda.DibujarAyudaSeguirIntroduciendo();
+                Thread.Sleep(9000);
+                break;
         }
     }
 
@@ -189,7 +200,10 @@ class HabitTracker
             switch (opcionTracker)
             {
                 case Tracker.ACTUALIZAR:
-                    tracker.ActualizarTracker(ranuraElegida);
+                    tracker.ActualizarTracker(ranuraElegida, listaDeComprobaciones);
+                    break;
+                case Tracker.ACTUALIZAR_HOY:
+                    tracker.ActualizarHoy(ranuraElegida, listaDeComprobaciones);
                     break;
                 case Tracker.BORRAR_TRACKER:
                     int borrar = -1;
@@ -246,7 +260,10 @@ class HabitTracker
             switch (opcionTracker)
             {
                 case Tracker.ACTUALIZAR:
-                    trackerCargado.ActualizarTracker(ranuraElegida);
+                    trackerCargado.ActualizarTracker(ranuraElegida, listaDeComprobaciones);
+                    break;
+                case Tracker.ACTUALIZAR_HOY:
+                    trackerCargado.ActualizarHoy(ranuraElegida, listaDeComprobaciones);
                     break;
                 case Tracker.BORRAR_TRACKER:
                     int borrar = -1;

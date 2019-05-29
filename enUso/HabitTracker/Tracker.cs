@@ -16,14 +16,20 @@
  *          Cambiar color de verde a azul para mejorar la visibilidad
  *          Método BorrarTracker
  * 0.07, 20/05/2019:
- *          Eliminar algunas variables que ahora están en la clase ListaDeComprobaciones
+ *          Eliminar algunas variables que ahora están en la clase
+ *          ListaDeComprobaciones
  * 0.08, 22/05/2019:
- *          Método ElegirHabito y ElegirFecha para que la opción "Actualizar" empiece a
- *          ser operativa
+ *          Método ElegirHabito y ElegirFecha para que la opción "Actualizar"
+ *          empiece a ser operativa
  * 0.11, 27/05/2019:
  *          Limitar opciones al mes actual (mejorable en próximas versiones)
  *          Corregir fallos de selección de opciones
  *          Mejoras en actualizar hábito
+ * 0.12, 29/05/2019:
+ *          Elegir dia en la opción actualizar antes de preguntar si se ha
+ *          realidado el hábito elegido.
+ *          Método ActualizarHoy: Elige hábito a actualizar y pantalla para ver
+ *          si se ha realizado o no el hábito.
  */
 
 using System;
@@ -43,6 +49,7 @@ class Tracker : IPantallaMostrable
     
     protected int numeroDeHabitos;
     protected int opcion;
+    protected int opcionDias;
 
     protected DateTime ahora;
     protected int anyoActual;
@@ -50,6 +57,8 @@ class Tracker : IPantallaMostrable
 
     protected string[] ranuras;
     public static bool[] ranuraVacia;
+
+    protected ListaDeComprobaciones listaDeComprobaciones;
 
     public Tracker(int ranuraElegida)
     {
@@ -61,6 +70,10 @@ class Tracker : IPantallaMostrable
         ahora = DateTime.Now;
         anyoActual = ahora.Year;
         numeroDeDias = DateTime.DaysInMonth(anyoActual, ahora.Month);
+
+        opcionDias = 0;
+
+        listaDeComprobaciones = new ListaDeComprobaciones(numeroDeHabitos, ranuraElegida);
     }
 
     public Tracker()
@@ -276,20 +289,32 @@ class Tracker : IPantallaMostrable
         Thread.Sleep(300);
     }
 
-    public void ActualizarTracker(int ranuraElegida)
+    public void ActualizarTracker(
+        int ranuraElegida, ListaDeComprobaciones listaDeComprobaciones)
     {
         ListaDeComprobaciones comprobaciones =
             new ListaDeComprobaciones(habitos.Length, ranuraElegida);
 
         int habito = ElegirHabito(ranuraElegida);
 
-        if (ConfirmarHabito() == 0)
-        {
+        opcionDias = 1;
+        int dia;
 
-        }
-        /*ElegirMes(ranuraElegida);
-        ElegirDia(ranuraElegidar);
-        MarcarHabito(ranuraElegida);*/
+        DibujarPortadaDias();
+
+        int mes = DateTime.Now.Month;
+
+        do
+        {
+            for (int i = 1; i <= DateTime.DaysInMonth(2019, mes); i++)
+            {
+                DibujarDias(i, i / 10);
+            }
+            dia = CambiarOpcionDia(DateTime.DaysInMonth(2019, mes));
+        } while (dia == -1);
+
+        listaDeComprobaciones.AnyadirComprobacion(
+            DateTime.Now.Day, mes, ConfirmarHabito() == 0);
     }
 
     public void DibujarHabito(int opcionActual)
@@ -400,8 +425,104 @@ class Tracker : IPantallaMostrable
         return -1;
     }
 
-    public void ActualizarHoy(int ranuraElegida)
+    public void ActualizarHoy(
+        int ranuraElegida, ListaDeComprobaciones listaDeComprobaciones)
     {
         int habito = ElegirHabito(ranuraElegida);
+
+        listaDeComprobaciones.AnyadirComprobacion(
+            DateTime.Now.Day, DateTime.Now.Month, ConfirmarHabito() == 0);
+    }
+
+    public static void DibujarPortadaDias()
+    {
+        Console.Clear();
+
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ".Length /
+            2), 3);
+        Console.WriteLine(@"  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ".Length /
+            2), 4);
+        Console.WriteLine(@" | __| |  |_ _/ __| __| | | | | \| | |   \_ _| /_\ (_)");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ".Length /
+            2), 5);
+        Console.WriteLine(@" | _|| |__ | | (_ | _|  | |_| | .` | | |) | | / _ \ _ ");
+        Console.SetCursorPosition(
+            HabitTracker.ANCHO_PANTALLA / 2 -
+            ("  ___ _    ___ ___ ___   _   _ _  _   ___ ___   _   _ ".Length /
+            2), 6);
+        Console.WriteLine(@" |___|____|___\___|___|  \___/|_|\_| |___/___/_/ \_(_)");
+    }
+
+    public void DibujarDias(int opcionActual, int decenas)
+    {
+        if (opcionActual == opcion)
+        {
+            Console.BackgroundColor = ConsoleColor.Blue;
+        }
+
+        if (opcionActual % 10 == 0)
+            Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 5 *
+                (decenas - 1) + HabitTracker.ANCHO_PANTALLA / 6,
+                (opcionActual - 1) % 10 * 3 + 10);
+        else
+            Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 5 *
+                decenas + HabitTracker.ANCHO_PANTALLA / 6,
+                (opcionActual - 1) % 10 * 3 + 10);
+        Console.WriteLine(opcionActual);
+        Console.BackgroundColor = ConsoleColor.Black;
+    }
+
+    public int CambiarOpcionDia(int numeroDeDias)
+    {
+        ConsoleKeyInfo tecla = Console.ReadKey(true);
+        switch (tecla.Key)
+        {
+            case ConsoleKey.DownArrow:
+                if (opcion == numeroDeDias)
+                    opcion = 1;
+                else
+                    opcion++;
+                break;
+            case ConsoleKey.UpArrow:
+                if (opcion == 1)
+                    opcion = numeroDeDias;
+                else
+                    opcion--;
+                break;
+            case ConsoleKey.RightArrow:
+                if (((opcion - 1) / 10) == (numeroDeDias / 10))
+                    opcion %= 10;
+                else
+                {
+                    if (opcion + 10 <= numeroDeDias)
+                        opcion += 10;
+                    else
+                        opcion = numeroDeDias;
+                }
+                break;
+            case ConsoleKey.LeftArrow:
+                if ((opcion - 1) / 10 == 0)
+                {
+                    if (opcion + numeroDeDias / 10 * 10 >= numeroDeDias)
+                        opcion = numeroDeDias;
+                    else
+                        opcion = opcion + numeroDeDias / 10 * 10;
+                }
+                else
+                    opcion -= 10;
+                break;
+            case ConsoleKey.Spacebar:
+            case ConsoleKey.Enter:
+                return opcion;
+        }
+
+        return -1;
     }
 }

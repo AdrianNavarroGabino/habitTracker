@@ -158,6 +158,10 @@ class IntroduccionHabitos : IPantallaMostrable
             }
         } while (tecla.Key != ConsoleKey.Enter);
 
-        habitos.Add(new Habito(habito, ranura));
+        Habito habitoNuevo;
+        habitoNuevo.nombre = habito;
+        habitoNuevo.ranura = ranura;
+
+        habitos.Add(habitoNuevo);
     }
 }

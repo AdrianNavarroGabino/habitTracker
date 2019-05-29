@@ -265,7 +265,7 @@ class TuAnyoEnPixeles
         return -1;
     }
 
-    public void DibujarPortadaDias()
+    public static void DibujarPortadaDias()
     {
         Console.Clear();
 

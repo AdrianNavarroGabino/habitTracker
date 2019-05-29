@@ -70,35 +70,32 @@ class ListaDeComprobaciones
             casillas = CrearMesVacio(DateTime.DaysInMonth(anyoActual, ahora.Month));
             listaDeComprobaciones.Add(claveDiccionario, casillas);
             ultimoMesActualizado = claveDiccionario;
-
-            if (File.Exists(@"data\meses" + ranuraElegida + ".txt"))
+            
+            try
             {
-                try
+                StreamWriter habitosCumplidos = new StreamWriter(@"data\meses" + ranuraElegida + ".txt");
+                habitosCumplidos.WriteLine(claveDiccionario);
+                for (int i = 0; i < numeroDeHabitos; i++)
                 {
-                    StreamWriter habitosCumplidos = new StreamWriter(@"data\meses" + ranuraElegida + ".txt");
-                    habitosCumplidos.WriteLine(claveDiccionario);
-                    for (int i = 0; i < numeroDeHabitos; i++)
+                    for (int j = 0; j < DateTime.DaysInMonth(anyoActual, ahora.Month); j++)
                     {
-                        for (int j = 0; j < DateTime.DaysInMonth(anyoActual, ahora.Month); j++)
-                        {
-                            habitosCumplidos.Write(casillas[i][j]);
-                        }
-                        habitosCumplidos.WriteLine();
+                        habitosCumplidos.Write(casillas[i][j]);
                     }
-                    habitosCumplidos.Close();
+                    habitosCumplidos.WriteLine();
                 }
-                catch (PathTooLongException)
-                {
-                    Console.WriteLine("Ruta demasiado larga");
-                }
-                catch (IOException)
-                {
-                    Console.WriteLine("IO error");
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Excepción");
-                }
+                habitosCumplidos.Close();
+            }
+            catch (PathTooLongException)
+            {
+                Console.WriteLine("Ruta demasiado larga");
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("IO error");
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Excepción");
             }
         }
         else
@@ -214,5 +211,10 @@ class ListaDeComprobaciones
         }
 
         return casillas;
+    }
+
+    public void AnyadirComprobacion(int dia, int mes, bool hecho)
+    {
+        casillas[mes - 1][dia - 1] = hecho ? 'X' : 'O';
     }
 }

@@ -9,26 +9,14 @@
 *          Constructor
 *          Getters y setters
 *          ToString
+* 0.12, 29/05/2019:
+*          Cambio a struct
 */
 
-class Habito
+public struct Habito
 {
-    protected string nombre;
-    protected int ranura;
-
-    public Habito(string nombre, int ranura)
-    {
-        this.nombre = nombre;
-        this.ranura = ranura;
-    }
-
-    public string GetNombre() { return nombre; }
-    public int GetRanura() { return ranura; }
-
-    public void SetRanura(int ranura)
-    {
-        this.ranura = ranura;
-    }
+    public string nombre;
+    public int ranura;
 
     public override string ToString()
     {
