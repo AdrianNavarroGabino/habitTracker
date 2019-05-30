@@ -30,6 +30,8 @@
  *          Método CargarLista para leer la lista de comprobaciones existente
  *          de su fichero
  *          Método getter para la lista de comprobaciones
+ * 0.13, 30/05/2019:
+ *          Corregir método AnyadirComprobacion
  */
 
 using System;
@@ -213,8 +215,10 @@ class ListaDeComprobaciones
         return casillas;
     }
 
-    public void AnyadirComprobacion(int dia, int mes, bool hecho)
+    public void AnyadirComprobacion(int dia, int numeroHabito, bool hecho)
     {
-        casillas[mes - 1][dia - 1] = hecho ? 'X' : 'O';
+        int clave = GenerarClave(2019, DateTime.Now.Month);
+        listaDeComprobaciones[clave][numeroHabito][dia - 1] = hecho ? 'X' : 'O';
+        ActualizarLista(ref clave);
     }
 }

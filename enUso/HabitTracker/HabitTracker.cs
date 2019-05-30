@@ -60,6 +60,12 @@ class HabitTracker
     static int ultimaClave;
     public const int ANCHO_PANTALLA = 100;
     public const int ALTO_PANTALLA = 40;
+    public const int NUEVO_TRACKER = 0;
+    public const int CARGAR_TRACKER = 1;
+    public const int TU_ANYO_EN_PIXELES = 2;
+    public const int VER_RESUMEN = 3;
+    public const int VER_AYUDA = 4;
+    public const int SALIR = 5;
 
     public HabitTracker()
     {
@@ -85,7 +91,7 @@ class HabitTracker
             } while (opcion == -1);
 
             EjecutarOpcion(opcion);
-        } while (opcion != 5);
+        } while (opcion != SALIR);
 
         salir.MostrarCreditos();
     }
@@ -94,13 +100,13 @@ class HabitTracker
     {
         switch (opcion)
         {
-            case 0:
+            case NUEVO_TRACKER:
                 EjecutarNuevoTracker();
                 break;
-            case 1:
+            case CARGAR_TRACKER:
                 EjecutarCargarTracker();
                 break;
-            case 2:
+            case TU_ANYO_EN_PIXELES:
                 int opcionAnyo;
 
                 do
@@ -132,14 +138,9 @@ class HabitTracker
                 }
                 while (opcionAnyo != TuAnyoEnPixeles.VOLVER);
                 break;
-            case 3: break;
-            case 4:
-                Ayuda.DibujarAyudaRanuras();
-                Thread.Sleep(2000);
-                Ayuda.DibujarAyudaIntroducir();
-                Thread.Sleep(2000);
-                Ayuda.DibujarAyudaSeguirIntroduciendo();
-                Thread.Sleep(9000);
+            case VER_RESUMEN: break;
+            case VER_AYUDA:
+                Ayuda.MostrarAyuda();
                 break;
         }
     }

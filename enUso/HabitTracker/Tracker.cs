@@ -249,11 +249,11 @@ class Tracker : IPantallaMostrable
             Console.Write("|");
             for (int j = 0; j < numeroDeDias; j++)
             {
-                if (datos[i + 1][j] == 'O')
+                if (datos[i + 1][j] == 'X')
                 {
-                    Console.BackgroundColor = ConsoleColor.Blue;
+                    Console.BackgroundColor = ConsoleColor.Green;
                 }
-                else if (datos[i + 1][j] == 'X')
+                else if (datos[i + 1][j] == 'O')
                 {
                     Console.BackgroundColor = ConsoleColor.Red;
                 }
@@ -314,7 +314,7 @@ class Tracker : IPantallaMostrable
         } while (dia == -1);
 
         listaDeComprobaciones.AnyadirComprobacion(
-            DateTime.Now.Day, mes, ConfirmarHabito() == 0);
+            dia, habito, ConfirmarHabito() == 0);
     }
 
     public void DibujarHabito(int opcionActual)
@@ -431,7 +431,7 @@ class Tracker : IPantallaMostrable
         int habito = ElegirHabito(ranuraElegida);
 
         listaDeComprobaciones.AnyadirComprobacion(
-            DateTime.Now.Day, DateTime.Now.Month, ConfirmarHabito() == 0);
+            DateTime.Now.Day, habito, ConfirmarHabito() == 0);
     }
 
     public static void DibujarPortadaDias()
