@@ -43,5 +43,7 @@ class Salir
         Thread.Sleep(4000);
 
         Console.Clear();
+
+        Environment.Exit(1);
     }
 }

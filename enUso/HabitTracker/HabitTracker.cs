@@ -50,8 +50,7 @@ class HabitTracker
     TrackerCargado trackerCargado;
     IntroduccionHabitos introducirHabitos;
     TuAnyoEnPixeles tuAnyoEnPixeles;
-    Resumen verResumen;
-    ModificacionDeDatos modificarDatos;
+    Resumen resumen;
     Salir salir;
     Menu menu;
     static ListaDeComprobaciones listaDeComprobaciones;
@@ -72,8 +71,6 @@ class HabitTracker
         Console.SetWindowSize(ANCHO_PANTALLA, ALTO_PANTALLA);
         
         tuAnyoEnPixeles = new TuAnyoEnPixeles();
-        verResumen = new Resumen();
-        modificarDatos = new ModificacionDeDatos();
         salir = new Salir();
     }
 
@@ -107,38 +104,12 @@ class HabitTracker
                 EjecutarCargarTracker();
                 break;
             case TU_ANYO_EN_PIXELES:
-                int opcionAnyo;
-
-                do
-                {
-                    tuAnyoEnPixeles.Dibujar();
-                    do
-                    {
-                        for (int i = 0; i < tuAnyoEnPixeles.GetNumeroDeOpciones(); i++)
-                            tuAnyoEnPixeles.DibujarOpcion(i);
-                        opcionAnyo = tuAnyoEnPixeles.CambiarOpcion();
-                    } while (opcionAnyo == -1);
-
-                    if (opcionAnyo == TuAnyoEnPixeles.ACTUALIZAR)
-                    {
-                        tuAnyoEnPixeles.Actualizar();
-                    }
-                    else if (opcionAnyo == TuAnyoEnPixeles.ACTUALIZAR_HOY)
-                    {
-                        tuAnyoEnPixeles.ActualizarHoy();
-                    }
-                    else if (opcionAnyo == TuAnyoEnPixeles.BORRAR)
-                    {
-                        if (tuAnyoEnPixeles.BorrarTuAnyoEnPixeles() == 0)
-                        {
-                            File.Delete(@"data\anyo.txt");
-                            tuAnyoEnPixeles = new TuAnyoEnPixeles();
-                        }
-                    }
-                }
-                while (opcionAnyo != TuAnyoEnPixeles.VOLVER);
+                EjecutarTuAnyoEnPixeles();
                 break;
-            case VER_RESUMEN: break;
+            case VER_RESUMEN:
+                resumen = new Resumen();
+                resumen.VerResumen(numeroDeHabitos);
+                break;
             case VER_AYUDA:
                 Ayuda.MostrarAyuda();
                 break;
@@ -285,5 +256,38 @@ class HabitTracker
                     break;
             }
         }
+    }
+
+    public void EjecutarTuAnyoEnPixeles()
+    {
+        int opcionAnyo;
+
+        do
+        {
+            tuAnyoEnPixeles.Dibujar();
+            do
+            {
+                for (int i = 0; i < tuAnyoEnPixeles.GetNumeroDeOpciones(); i++)
+                    tuAnyoEnPixeles.DibujarOpcion(i);
+                opcionAnyo = tuAnyoEnPixeles.CambiarOpcion();
+            } while (opcionAnyo == -1);
+
+            switch (opcionAnyo)
+            {
+                case TuAnyoEnPixeles.ACTUALIZAR:
+                    tuAnyoEnPixeles.Actualizar();
+                    break;
+                case TuAnyoEnPixeles.ACTUALIZAR_HOY:
+                    tuAnyoEnPixeles.ActualizarHoy();
+                    break;
+                case TuAnyoEnPixeles.BORRAR:
+                    if (tuAnyoEnPixeles.BorrarTuAnyoEnPixeles() == 0)
+                    {
+                        File.Delete(@"data\anyo.txt");
+                        tuAnyoEnPixeles = new TuAnyoEnPixeles();
+                    }
+                    break;
+            }
+        } while (opcionAnyo != TuAnyoEnPixeles.VOLVER);
     }
 }

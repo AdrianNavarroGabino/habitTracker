@@ -138,9 +138,14 @@ class IntroduccionHabitos : IPantallaMostrable
         do
         {
             tecla = Console.ReadKey(true);
-            
-            if (tecla.Key != ConsoleKey.Enter && posicionX < 94 &&
-                tecla.Key != ConsoleKey.Spacebar && posicionY <= 33)
+
+            if (posicionX >= 94)
+            {
+                posicionX = 4;
+                posicionY += 5;
+            }
+
+            if (tecla.Key != ConsoleKey.Enter && posicionY <= 33)
             {
                 char caracter = tecla.KeyChar;
                 habito += caracter;

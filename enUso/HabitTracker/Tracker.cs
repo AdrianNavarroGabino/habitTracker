@@ -460,20 +460,20 @@ class Tracker : IPantallaMostrable
         Console.WriteLine(@" |___|____|___\___|___|  \___/|_|\_| |___/___/_/ \_(_)");
     }
 
-    public void DibujarDias(int opcionActual, int decenas)
+    public void DibujarDias(int opcionActual, int decenasDeMes)
     {
-        if (opcionActual == opcion)
+        if (opcionActual == opcion + 1)
         {
             Console.BackgroundColor = ConsoleColor.Blue;
         }
 
         if (opcionActual % 10 == 0)
             Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 5 *
-                (decenas - 1) + HabitTracker.ANCHO_PANTALLA / 6,
+                (decenasDeMes - 1) + HabitTracker.ANCHO_PANTALLA / 6,
                 (opcionActual - 1) % 10 * 3 + 10);
         else
             Console.SetCursorPosition(HabitTracker.ANCHO_PANTALLA / 5 *
-                decenas + HabitTracker.ANCHO_PANTALLA / 6,
+                decenasDeMes + HabitTracker.ANCHO_PANTALLA / 6,
                 (opcionActual - 1) % 10 * 3 + 10);
         Console.WriteLine(opcionActual);
         Console.BackgroundColor = ConsoleColor.Black;

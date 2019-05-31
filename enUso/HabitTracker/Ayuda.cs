@@ -16,6 +16,9 @@
  *          Método DibujarAyudaTrackerCargado
  *          Método Esperar
  *          Método MostrarAyuda
+ * 0.14, 31/05/2019:
+ *          Corregir método Esperar para que continue tras 10 segundos
+ *          aunque no se pulse ninguna tecla
  */
 
 using System;
@@ -463,7 +466,8 @@ class Ayuda
             Thread.Sleep(1000);
             indice++;
         }
-        Console.ReadKey();
+        if(indice < 9)
+            Console.ReadKey();
     }
 
     public static void MostrarAyuda()
